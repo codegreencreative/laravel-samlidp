@@ -1,0 +1,12 @@
+{
+    "name": "codegreencreative/laravel-samlidp",
+    "require": {
+        "laravel/framework": "^5.4",
+        "lightsaml/lightsaml": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Codegreencreative\\Idp\\": "src/"
+        }
+    }
+}
