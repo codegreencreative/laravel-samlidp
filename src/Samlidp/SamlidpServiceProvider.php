@@ -28,7 +28,7 @@ class SamlidpServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(Router $router)
+    public function boot(\Illuminate\Contracts\Http\Kernel $kernel)
     {
         // Publish config files
         $this->publishes([
@@ -38,7 +38,7 @@ class SamlidpServiceProvider extends ServiceProvider
         // Register blade directives
         $this->bladeDirectives();
 
-        $router->middleware('saml_guest', Http\Middleware\SamlRedirectIfAuthenticated::class);
+        $kernel->prependMiddleware('Codegreencreative\Idp\Http\Middleware\SamlRedirectIfAuthenticated::class');
     }
 
     /**
