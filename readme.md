@@ -10,23 +10,32 @@ Require this package with composer:
 composer require codegreencreative/laravel-samlidp
 ```
 
-After updating composer, add the ServiceProvider to the providers array in config/app.php
+Add the ServiceProvider to the providers array in config/app.php
 
 ```php
 Codegreencreative\Idp\SamlidpServiceProvider::class
 ```
 
-Add Samlidp facade
+Add Samlidp facade to the aliases array in config/app.php
 
 ```php
 'Samlidp' => Codegreencreative\Idp\Facades\Samlidp::class
 ```
 
-## Publish Config
+Publish samlidp.php config to config/samlidp.php
 
 ```shell
 php artisan vendor:publish --provider="Codegreencreative\Idp\ServiceProvider"
 ```
+
+Create a Self Signed Certificate
+
+```shell
+cd path/to/project/storage
+openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout samlidp-private.key -out samlidp-public.key
+```
+
+Change the -days to what your application requires. `20 years = 7300`
 
 ## Usage:
 
@@ -41,15 +50,6 @@ Add Samlidp fields to your login form
 
 </form>
 ```
-
-### 1. Create a Self Signed Certificate
-
-```shell
-cd path/to/project/storage
-openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout samlidp-private.key -out samlidp-public.key
-```
-
-Change the -days to what your application requires. `20 years = 7300`
 
 ### Identification Provider (you) Issuer
 
