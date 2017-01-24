@@ -34,10 +34,13 @@ class SamlidpServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/samlidp.php' => config_path('samlipd.php'),
         ]);
-
+        // Load routes
+        $this->loadRoutesFrom(__DIR__.'/../routes/routes.php');
         // Register blade directives
         $this->bladeDirectives();
-
+        // Load views
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'samlidp');
+        // Add global middleware
         $kernel->prependMiddleware('Codegreencreative\Idp\Http\Middleware\SamlRedirectIfAuthenticated::class');
     }
 
@@ -63,16 +66,8 @@ class SamlidpServiceProvider extends ServiceProvider
         if (!class_exists('\Blade')) return;
 
         // @samlfields
-        \Blade::directive('samlidpfields', function($expression) {
-            $fields = '';
-            if (request()->has('SAMLRequest')) {
-                $fields .= '<input type="hidden" name="SAMLRequest" value="' . request()->get('SAMLRequest') . '" />';
-            }
-            if (request()->has('RelayState')) {
-                $fields .= '<input type="hidden" name="RelayState" value="' . request()->get('RelayState') . '" />';
-            }
-            return $fields;
-        });
+        // \Blade::directive('samlidpfields', function($expression) {
+        // });
     }
 
     /**
@@ -87,6 +82,10 @@ class SamlidpServiceProvider extends ServiceProvider
         // });
 
         // $this->app->alias('entrust', 'Zizaco\Entrust\Entrust');
+        //
+        $this->app->singleton('samlidp', function($app) {
+            return new Samlidp;
+        });
     }
 
     /**
@@ -120,8 +119,8 @@ class SamlidpServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        // return [
-        //     'command.entrust.migration'
-        // ];
+        return [
+            'samlidp'
+        ];
     }
 }

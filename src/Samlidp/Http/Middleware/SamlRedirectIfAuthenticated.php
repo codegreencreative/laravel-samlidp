@@ -1,16 +1,17 @@
 <?php
 
-namespace Codegreencreative\Samlidp\Http\Middleware;
+namespace Codegreencreative\Idp\Http\Middleware;
 
 use Closure;
-use App\Traits\SamlAuth;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Codegreencreative\Idp\Traits\SamlidpAuth;
 
 
 class SamlRedirectIfAuthenticated
 {
-    use SamlAuth;
+    use SamlidpAuth;
+
     /**
      * Handle an incoming request.
      *
@@ -19,10 +20,10 @@ class SamlRedirectIfAuthenticated
      * @param  string|null  $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next)
     {
-        if (Auth::guard($guard)->check()) {
-            return $request->has('SAMLRequest') ? response($this->samlRequest($request, Auth::user()), 200) : redirect('/');
+        if (Auth::check() && $request->has('SAMLRequest')) {
+            return response($this->samlRequest($request, Auth::user()), 200);
         }
 
         return $next($request);

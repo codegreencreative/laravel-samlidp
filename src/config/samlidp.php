@@ -11,12 +11,12 @@ return [
     |
     */
 
+   'login_uri' => 'login',
+   'issuer_uri' => 'saml/metadata',
+
     'sp' => [
-        'example=' => [
-            'destination' => 'example.com',
-            'issuer' => env('APP_URL') . '/saml/metadata',
-            'cert' => resource_path('certs/id.crt'),
-            'key' => resource_path('certs/id.key')
+        'aHR0cHM6Ly9teWZhY2Vib29rd29ya3BsYWNlLmZhY2Vib29rLmNvbS93b3JrL3NhbWwucGhw' => [
+            'destination' => 'https://myfacebookworkplace.facebook.com/work/saml.php',
         ]
     ]
 

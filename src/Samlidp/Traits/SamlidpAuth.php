@@ -34,7 +34,7 @@ use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Assertion\SubjectConfirmationData;
 use LightSaml\Context\Profile\Helper\MessageContextHelper;
 
-trait SamlAuth
+trait SamlidpAuth
 {
     private $destination;
     private $issuer;
@@ -59,13 +59,14 @@ trait SamlAuth
         $authn_request->deserialize($deserializationContext->getDocument()->firstChild, $deserializationContext);
 
         $this->service_provider = $this->getServiceProvider($authn_request);
-        $this->destination = config(sprintf('saml.sp.%s.destination', $this->service_provider));
-        $this->issuer = config(sprintf('saml.sp.%s.issuer', $this->service_provider));
-        $this->certificate = X509Certificate::fromFile(config(sprintf('saml.sp.%s.cert', $this->service_provider)));
-        $this->private_key = KeyHelper::createPrivateKey(config(sprintf('saml.sp.%s.key', $this->service_provider)), '', true, XMLSecurityKey::RSA_SHA256);
+        $this->destination = config(sprintf('samlidp.sp.%s.destination', $this->service_provider));
+        $this->issuer = url(config('samlidp.issuer'));
+        $this->certificate = X509Certificate::fromFile(storage_path('samlidp-public.key'));
+        $this->private_key = KeyHelper::createPrivateKey(storage_path('samlidp-private.key'), '', true, XMLSecurityKey::RSA_SHA256);
 
         return $this->samlResponse($authn_request, $user, $request);
     }
+
     /**
      * [samlResponse description]
      *
@@ -105,7 +106,6 @@ trait SamlAuth
                     ->setNotBefore(new \DateTime)
                     ->setNotOnOrAfter(new \DateTime('+1 MINUTE'))
                     ->addItem(
-                        // new AudienceRestriction([$authn_request->getAssertionConsumerServiceURL()])
                         new AudienceRestriction([$authn_request->getIssuer()->getValue()])
                     )
             )
@@ -115,7 +115,6 @@ trait SamlAuth
                     ->setSessionIndex(Helper::generateID())
                     ->setAuthnContext(
                         (new AuthnContext())
-                            // ->setAuthnContextClassRef(SamlConstants::AUTHN_CONTEXT_PASSWORD_PROTECTED_TRANSPORT)
                             ->setAuthnContextClassRef(SamlConstants::NAME_ID_FORMAT_UNSPECIFIED)
                     )
             );
