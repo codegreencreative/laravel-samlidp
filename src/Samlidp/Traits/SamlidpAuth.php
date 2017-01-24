@@ -60,7 +60,7 @@ trait SamlidpAuth
 
         $this->service_provider = $this->getServiceProvider($authn_request);
         $this->destination = config(sprintf('samlidp.sp.%s.destination', $this->service_provider));
-        $this->issuer = url(config('samlidp.issuer'));
+        $this->issuer = url(config('samlidp.issuer_uri'));
         $this->certificate = X509Certificate::fromFile(config('samlidp.crt'));
         $this->private_key = KeyHelper::createPrivateKey(config('samlidp.key'), '', true, XMLSecurityKey::RSA_SHA256);
 
