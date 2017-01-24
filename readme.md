@@ -30,9 +30,11 @@ php artisan vendor:publish --provider="Codegreencreative\Idp\ServiceProvider"
 
 Create a Self Signed Certificate (to be used later)
 
+First create folder structure `path/to/project/storage/certs`
+
 ```shell
-cd path/to/project/storage
-openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout samlidp-private.key -out samlidp-public.key
+cd path/to/project/storage/certs
+openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout samlidp.key -out samlidp.crt
 ```
 
 Change the -days to what your application requires. `20 years = 7300`
@@ -67,15 +69,16 @@ return [
 
     // The URI to your login page
     'login_uri' => 'login',
-    
     // The URI to the saml metadata file, this describes your idP
     'issuer_uri' => 'saml/metadata',
-
+    // Get self signed certificate
+    'crt' => storage_path('certs/samlidp.crt'),
+    // Get private key
+    'key' => storage_path('certs/samlidp.key'),
+    // list of all service providers
     'sp' => [
-    
         // Base64 encoded ACS URL
         'aHR0cHM6Ly9teWZhY2Vib29rd29ya3BsYWNlLmZhY2Vib29rLmNvbS93b3JrL3NhbWwucGhw' => [
-        
             // Your destination is the ACS URL of the Service Provider
             'destination' => 'https://myfacebookworkplace.facebook.com/work/saml.php',
         ]
