@@ -1,6 +1,6 @@
 <?php
 
-namespace Codegreencreateive\Idp\Traits;
+namespace Codegreencreative\Idp\Traits;
 
 use Illuminate\Http\Request;
 use Codegreencreative\Idp\Traits\SamlidpAuth;

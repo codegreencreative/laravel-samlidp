@@ -11,6 +11,7 @@ namespace Codegreencreative\Idp;
  */
 
 use Illuminate\Routing\Router;
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider;
 
 
@@ -28,7 +29,7 @@ class SamlidpServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(\Illuminate\Contracts\Http\Kernel $kernel)
+    public function boot(Kernel $kernel)
     {
         // Publish config files
         $this->publishes([
