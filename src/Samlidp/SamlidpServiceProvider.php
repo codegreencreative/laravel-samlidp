@@ -32,7 +32,7 @@ class SamlidpServiceProvider extends ServiceProvider
     {
         // Publish config files
         $this->publishes([
-            __DIR__.'/../config/samlidp.php' => config_path('samlipd.php'),
+            __DIR__.'/../config/samlidp.php' => config_path('samlidp.php'),
         ]);
         // Load routes
         $this->loadRoutesFrom(__DIR__.'/../routes/routes.php');
