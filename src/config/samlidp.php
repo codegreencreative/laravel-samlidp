@@ -11,11 +11,18 @@ return [
     |
     */
 
-   'login_uri' => 'login',
-   'issuer_uri' => 'saml/metadata',
+    // The URI to your login page
+    'login_uri' => 'login',
+
+    // The URI to the saml metadata file, this describes your idP
+    'issuer_uri' => 'saml/metadata',
 
     'sp' => [
+
+        // Base64 encoded ACS URL
         'aHR0cHM6Ly9teWZhY2Vib29rd29ya3BsYWNlLmZhY2Vib29rLmNvbS93b3JrL3NhbWwucGhw' => [
+
+            // Your destination is the ACS URL of the Service Provider
             'destination' => 'https://myfacebookworkplace.facebook.com/work/saml.php',
         ]
     ]
