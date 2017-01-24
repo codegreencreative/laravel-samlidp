@@ -10,7 +10,9 @@ namespace Codegreencreative\Idp;
  * @package Zizaco\Entrust
  */
 
+use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
+
 
 class SamlidpServiceProvider extends ServiceProvider
 {
@@ -26,18 +28,20 @@ class SamlidpServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(\Illuminate\Contracts\Http\Kernel $kernel)
     {
         // Publish config files
         $this->publishes([
-            __DIR__.'/../config/samlidp.php' => app()->basePath() . '/config/entrust.php',
+            __DIR__.'/../config/samlidp.php' => config_path('samlipd.php'),
         ]);
-
-        // Register commands
-        $this->commands('command.entrust.migration');
-
+        // Load routes
+        $this->loadRoutesFrom(__DIR__.'/../routes/routes.php');
         // Register blade directives
         $this->bladeDirectives();
+        // Load views
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'samlidp');
+        // Add global middleware
+        $kernel->prependMiddleware('Codegreencreative\Idp\Http\Middleware\SamlRedirectIfAuthenticated::class');
     }
 
     /**
@@ -47,9 +51,7 @@ class SamlidpServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerEntrust();
-
-        $this->registerCommands();
+        $this->registerSamlidp();
 
         $this->mergeConfig();
     }
@@ -59,36 +61,13 @@ class SamlidpServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function bladeDirectives(Request $request)
+    private function bladeDirectives()
     {
         if (!class_exists('\Blade')) return;
 
         // @samlfields
-        \Blade::directive('samlfields', function() {
-            return '<input type="hidden" name="SAMLRequest" value="' . $request->SAMLRequest . '" />';
-        });
-
-        \Blade::directive('endrole', function($expression) {
-            return "<?php endif; // Entrust::hasRole ?>";
-        });
-
-        // Call to Entrust::can
-        \Blade::directive('permission', function($expression) {
-            return "<?php if (\\Entrust::can({$expression})) : ?>";
-        });
-
-        \Blade::directive('endpermission', function($expression) {
-            return "<?php endif; // Entrust::can ?>";
-        });
-
-        // Call to Entrust::ability
-        \Blade::directive('ability', function($expression) {
-            return "<?php if (\\Entrust::ability({$expression})) : ?>";
-        });
-
-        \Blade::directive('endability', function($expression) {
-            return "<?php endif; // Entrust::ability ?>";
-        });
+        // \Blade::directive('samlidpfields', function($expression) {
+        // });
     }
 
     /**
@@ -96,13 +75,17 @@ class SamlidpServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function registerEntrust()
+    private function registerSamlidp()
     {
-        $this->app->bind('entrust', function ($app) {
-            return new Entrust($app);
-        });
+        // $this->app->bind('entrust', function ($app) {
+        //     return new Entrust($app);
+        // });
 
-        $this->app->alias('entrust', 'Zizaco\Entrust\Entrust');
+        // $this->app->alias('entrust', 'Zizaco\Entrust\Entrust');
+        //
+        $this->app->singleton('samlidp', function($app) {
+            return new Samlidp;
+        });
     }
 
     /**
@@ -112,9 +95,9 @@ class SamlidpServiceProvider extends ServiceProvider
      */
     private function registerCommands()
     {
-        $this->app->singleton('command.entrust.migration', function ($app) {
-            return new MigrationCommand();
-        });
+        // $this->app->singleton('command.entrust.migration', function ($app) {
+        //     return new MigrationCommand();
+        // });
     }
 
     /**
@@ -125,7 +108,7 @@ class SamlidpServiceProvider extends ServiceProvider
     private function mergeConfig()
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../config/config.php', 'entrust'
+            __DIR__.'/../config/samlidp.php', 'samlidp'
         );
     }
 
@@ -137,7 +120,7 @@ class SamlidpServiceProvider extends ServiceProvider
     public function provides()
     {
         return [
-            'command.entrust.migration'
+            'samlidp'
         ];
     }
 }
