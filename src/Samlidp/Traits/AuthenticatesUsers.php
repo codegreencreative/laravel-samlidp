@@ -5,12 +5,13 @@ namespace Codegreencreative\Idp\Traits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
+use Codegreencreative\Idp\Traits\SamlidpAuth;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 
 trait AuthenticatesUsers
 {
-    use RedirectsUsers, ThrottlesLogins;
+    use RedirectsUsers, ThrottlesLogins, SamlidpAuth;
 
     /**
      * Show the application's login form.
