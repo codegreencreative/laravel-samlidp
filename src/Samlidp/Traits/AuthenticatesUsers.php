@@ -108,7 +108,7 @@ trait AuthenticatesUsers
     }
 
     /**
-     * The user has been authenticated.
+     * The user has been authenticated using the login form
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  mixed  $user
@@ -117,7 +117,7 @@ trait AuthenticatesUsers
     public function authenticated(Request $request, $user)
     {
         if ($request->has('SAMLRequest')) {
-            return $this->samlRequest($request, $user);
+            return response($this->samlRequest($request, $user), 200);
         }
     }
 
