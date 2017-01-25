@@ -2,6 +2,8 @@
 
 namespace Codegreencreative\Idp\Traits;
 
+use Illuminate\Support\Facades\Log;
+
 trait SamlidpLog
 {
     /**
