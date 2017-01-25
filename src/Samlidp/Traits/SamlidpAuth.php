@@ -24,6 +24,7 @@ use LightSaml\Model\Assertion\Conditions;
 use LightSaml\Model\Protocol\AuthnRequest;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
 use LightSaml\Model\Assertion\AuthnContext;
+use Codegreencreative\Idp\Traits\SamlidpLog;
 use LightSaml\Model\XmlDSig\SignatureWriter;
 use LightSaml\Context\Profile\MessageContext;
 use LightSaml\Model\Assertion\AuthnStatement;
@@ -36,6 +37,8 @@ use LightSaml\Context\Profile\Helper\MessageContextHelper;
 
 trait SamlidpAuth
 {
+    use SamlidpLog;
+
     private $destination;
     private $issuer;
     private $certificate;
@@ -59,6 +62,11 @@ trait SamlidpAuth
         $authn_request->deserialize($deserializationContext->getDocument()->firstChild, $deserializationContext);
 
         $this->service_provider = $this->getServiceProvider($authn_request);
+
+        // Logging
+        $this->SamlidpLog('Service Provider: ' . $authn_request->getAssertionConsumerServiceURL());
+        $this->SamlidpLog('Service Provider (base64): ' . $this->service_provider);
+
         $this->destination = config(sprintf('samlidp.sp.%s.destination', $this->service_provider));
         $this->issuer = url(config('samlidp.issuer_uri'));
         $this->certificate = X509Certificate::fromFile(config('samlidp.crt'));

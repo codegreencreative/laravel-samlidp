@@ -10,7 +10,8 @@ return [
     | Use this file to configure the service providers you want to use.
     |
     */
-
+    // Outputs data to your laravel.log file for debugging
+    'debug' => false,
     // The URI to your login page
     'login_uri' => 'login',
     // The URI to the saml metadata file, this describes your idP
