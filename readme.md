@@ -65,6 +65,7 @@ Sample config/samlidp.php file
 
 ```php
 <?php
+
 return [
 
     // The URI to your login page
@@ -89,17 +90,27 @@ return [
 
 ## User requesting the SP but are not logged in to your idP...
 
-In your `LoginController` you must be using `AuthenticatesUsers` trait shipped with Laravel. The `SamlidoAuth` trait will override the `authenticated` method to handle SAML form submissions. Upon successful login the `authenticated` method will fire causing the SAML form to be generated and submitted to the SP. Of course the original SAMLRequest would need to have been made for this process to execute. This is done for you. Just add the trait and use it and your done.
+In your `LoginController` replace the default Laravel `AuthenticatesUsers` trait with a new one supplied with `Samlidp`. The new trait will handle SAML form submissions. Upon successful login the `authenticated` method will fire causing the SAML form to be generated and submitted to the SP. Of course the original SAMLRequest would need to have been made for this process to execute. This is done for you. Just replace the trait and you're done.
+
+There is also a aliased middleware that will need to be added to your `LoginController`. See below for example.
 
 ```php
+<?php
 
-use Codegreencreative\Idp\Traits\SamlidpAuth;
+use Codegreencreative\Idp\Traits\AuthenticatesUsers;
 
 class LoginController extends Controller
 {
-    use AuthenticatesUsers, SamlidpAuth;
+    use AuthenticatesUsers;
+
+    public function __construct()
+    {
+        $this->middleware(['saml', 'guest'], ['except' => 'logout']);
+    }
 }
 ```
+
+There is also a aliased middleware that will need to be added to your `LoginController`.
 
 ## User requesting the SP and are logged into your idP...
 
