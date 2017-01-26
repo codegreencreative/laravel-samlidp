@@ -29,7 +29,7 @@ class SamlidpServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(Kernel $kernel)
+    public function boot(Router $router)
     {
         // Publish config files
         $this->publishes([
@@ -42,7 +42,8 @@ class SamlidpServiceProvider extends ServiceProvider
         // Load views
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'samlidp');
         // Add global middleware
-        $kernel->prependMiddleware('Codegreencreative\Idp\Http\Middleware\SamlRedirectIfAuthenticated::class');
+        $router->aliasMiddleware('saml', \Codegreencreative\Idp\Http\Middleware\SamlRedirectIfAuthenticated::class);
+        // $kernel->prependMiddleware('Codegreencreative\Idp\Http\Middleware\SamlRedirectIfAuthenticated::class');
     }
 
     /**
