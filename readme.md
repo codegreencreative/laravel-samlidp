@@ -1,4 +1,4 @@
-# Laravel 5 SAML idP
+# Laravel SAML idP
 
 This package allows you to implement your own Identification Provider (idP) using the SAML 2.0 standard to be used with supporting SAML 2.0 Service Providers (SP).
 
@@ -25,7 +25,7 @@ Add Samlidp facade to the aliases array in config/app.php
 Publish samlidp.php config to config/samlidp.php
 
 ```shell
-php artisan vendor:publish --provider="Codegreencreative\Idp\ServiceProvider"
+php artisan vendor:publish --provider="Codegreencreative\Idp\SamlidpServiceProvider"
 ```
 
 Create a Self Signed Certificate (to be used later)
