@@ -22,10 +22,16 @@ Add Samlidp facade to the aliases array in config/app.php
 'Samlidp' => Codegreencreative\Idp\Facades\Samlidp::class
 ```
 
-Publish samlidp.php config to config/samlidp.php
+Publish config and samlidp views
+config/samlidp.php
+resources/views/vendor/samlidp/
 
 ```shell
 php artisan vendor:publish --provider="Codegreencreative\Idp\SamlidpServiceProvider"
+```
+
+```php
+view('samlidp::auth.login');
 ```
 
 Create a Self Signed Certificate (to be used later)
@@ -40,6 +46,12 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout samlidp.key 
 Change the -days to what your application requires. `20 years = 7300`
 
 ## Usage
+
+Add routes to your application (web.php)
+
+```php
+Samlidp::auth();
+```
 
 Add Samlidp fields to your login form
 

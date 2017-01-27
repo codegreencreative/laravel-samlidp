@@ -4,10 +4,7 @@ namespace Codegreencreative\Idp\Traits;
 
 use App\User;
 use LightSaml\Helper;
-use LightSaml\ClaimTypes;
-use Illuminate\Http\Request;
 use LightSaml\SamlConstants;
-use Illuminate\Support\Facades\Log;
 use LightSaml\Credential\KeyHelper;
 use LightSaml\Model\Protocol\Status;
 use LightSaml\Binding\BindingFactory;
@@ -15,9 +12,6 @@ use LightSaml\Model\Assertion\Issuer;
 use LightSaml\Model\Assertion\NameID;
 use LightSaml\Model\Assertion\Subject;
 use LightSaml\Model\Protocol\Response;
-use LightSaml\Binding\SamlPostResponse;
-use LightSaml\Model\Assertion\Assertion;
-use LightSaml\Model\Assertion\Attribute;
 use LightSaml\Model\Protocol\StatusCode;
 use LightSaml\Credential\X509Certificate;
 use LightSaml\Model\Assertion\Conditions;
@@ -28,12 +22,11 @@ use Codegreencreative\Idp\Traits\SamlidpLog;
 use LightSaml\Model\XmlDSig\SignatureWriter;
 use LightSaml\Context\Profile\MessageContext;
 use LightSaml\Model\Assertion\AuthnStatement;
-use LightSaml\Model\Assertion\AttributeStatement;
+use Symfony\Component\HttpFoundation\Request;
 use LightSaml\Model\Assertion\AudienceRestriction;
 use LightSaml\Model\Assertion\SubjectConfirmation;
 use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Assertion\SubjectConfirmationData;
-use LightSaml\Context\Profile\Helper\MessageContextHelper;
 
 trait SamlidpAuth
 {
@@ -163,17 +156,6 @@ trait SamlidpAuth
         $message = $messageContext->getMessage();
         $message->setRelayState($request->RelayState);
         $httpResponse = $postBinding->send($messageContext);
-
-
-        // Testing only
-//         $messageContext = new MessageContext();
-//         $messageContext->setMessage($response)->asResponse();
-//         $message = MessageContextHelper::asSamlMessage($messageContext);
-//         $destination = $message->getDestination() ? $message->getDestination() : $destination;
-//         $serializationContext = $messageContext->getSerializationContext();
-//         $message->serialize($serializationContext->getDocument(), $serializationContext);
-//         $msgStr = $serializationContext->getDocument()->saveXML();
-// Log::info($msgStr);
 
         return $httpResponse->getContent();
     }

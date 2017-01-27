@@ -20,4 +20,5 @@ class Samlidp extends Facade
             ', request()->get('SAMLRequest'), request()->get('RelayState'));
         }
     }
+
 }

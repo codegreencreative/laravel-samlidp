@@ -36,14 +36,23 @@ class SamlidpServiceProvider extends ServiceProvider
             __DIR__.'/../config/samlidp.php' => config_path('samlidp.php'),
         ]);
         // Load routes
-        $this->loadRoutesFrom(__DIR__.'/../routes/routes.php');
+        // $this->loadRoutesFrom(__DIR__.'/../routes/routes.php');
+        $this->app->router->group([
+            'group' => 'web',
+            'namespace' => 'Codegreencreative\Idp\Http\Controllers'
+        ], function(){
+            require __DIR__.'/../routes/routes.php';
+        });
         // Register blade directives
         $this->bladeDirectives();
         // Load views
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'samlidp');
+        // Publish them as well
+        $this->publishes([
+            __DIR__.'/../resources/views' => resource_path('views/vendor/samlidp'),
+        ]);
         // Add global middleware
         $router->aliasMiddleware('saml', \Codegreencreative\Idp\Http\Middleware\SamlRedirectIfAuthenticated::class);
-        // $kernel->prependMiddleware('Codegreencreative\Idp\Http\Middleware\SamlRedirectIfAuthenticated::class');
     }
 
     /**

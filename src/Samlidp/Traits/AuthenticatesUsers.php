@@ -20,7 +20,7 @@ trait AuthenticatesUsers
      */
     public function showLoginForm()
     {
-        return view('auth.login');
+        return view('samlidp::auth.login');
     }
 
     /**
@@ -159,6 +159,8 @@ trait AuthenticatesUsers
         $request->session()->flush();
 
         $request->session()->regenerate();
+
+        // new samlLogoutRequest;
 
         return redirect('/');
     }
