@@ -5,6 +5,7 @@ namespace Codegreencreative\Idp\Traits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
+use Codegreencreative\Idp\SamlidpLogout;
 use Codegreencreative\Idp\Traits\SamlidpAuth;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -160,7 +161,7 @@ trait AuthenticatesUsers
 
         $request->session()->regenerate();
 
-        // new samlLogoutRequest;
+        new SamlidpLogout;
 
         return redirect('/');
     }
