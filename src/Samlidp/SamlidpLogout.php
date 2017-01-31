@@ -39,8 +39,34 @@ class SamlidpLogout
         $this->issuer = url(config('samlidp.issuer_uri'));
         $this->certificate = X509Certificate::fromFile(config('samlidp.crt'));
         $this->private_key = KeyHelper::createPrivateKey(config('samlidp.key'), '', true, XMLSecurityKey::RSA_SHA256);
+dd($xml);
+        return $this->response($logout_request, $user, $request);
+    }
 
-        return $this->samlResponse($logout_request, $user, $request);
+    public function response()
+    {
+        $message = new LogoutResponse();
+        $message
+            ->setRelayState($logout_request->getRelayState())
+            ->setStatus(new Status(
+                new StatusCode(SamlConstants::STATUS_SUCCESS)
+            ))
+            ->setDestination($slo->getLocation())
+            ->setInResponseTo($logout_request->getID())
+            ->setID(\LightSaml\Helper::generateID())
+            ->setIssueInstant(new \DateTime())
+            /* here, the SP entity id is a container parameter, change it as you wish */
+            ->setIssuer(new Issuer($this->container->getParameter('saml.entity_id')))
+        ;
+        $context = new MessageContext();
+        $context->setBindingType($slo->getBinding());
+        $context->setMessage($message);
+        $bindingFactory = $this->container->get('lightsaml.service.binding_factory');
+        /* @var $bindingFactory BindingFactory */
+        $binding = $bindingFactory->create($slo->getBinding());
+        /* @var $binding AbstractBinding */
+        $response = $binding->send($context);
+        return $response;
     }
 
 }
