@@ -30,11 +30,13 @@ resources/views/vendor/samlidp/
 php artisan vendor:publish --provider="Codegreencreative\Idp\SamlidpServiceProvider"
 ```
 
-```php
-view('samlidp::auth.login');
-```
+Will publish a view for the login screen at:
 
-Create a Self Signed Certificate (to be used later)
+`resources/views/vendor/samlidp/auth/login.blade.php`
+
+You may modify this file as needed but pay close attention to the action on the form. Very important.
+
+# Create a Self Signed Certificate (to be used later)
 
 First create folder structure `path/to/project/storage/certs`
 
@@ -47,25 +49,9 @@ Change the -days to what your application requires. `20 years = 7300`
 
 ## Usage
 
-Add routes to your application (web.php)
+To begin using SAML use the login route: http://example.com/saml/login
 
-```php
-Samlidp::auth();
-```
-
-Add Samlidp fields to your login form
-
-```blade
-<form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
-
-    {{ csrf_field() }}
-    {!! Samlidp::fields() !!}
-    ...
-
-</form>
-```
-
-These fields will only be placed if a SAMLRequest is made.
+This route will authenticate your user and perform the SAML actions as necessary for your Service Provider.
 
 ## Config
 
@@ -99,33 +85,3 @@ return [
 
 ];
 ```
-
-## User requesting the SP but are not logged in to your idP...
-
-In your `LoginController` replace the default Laravel `AuthenticatesUsers` trait with a new one supplied with `Samlidp`. The new trait will handle SAML form submissions. Upon successful login the `authenticated` method will fire causing the SAML form to be generated and submitted to the SP. Of course the original SAMLRequest would need to have been made for this process to execute. This is done for you. Just replace the trait and you're done.
-
-There is also a aliased middleware that will need to be added to your `LoginController`. See below for example.
-
-```php
-<?php
-
-use Codegreencreative\Idp\Traits\AuthenticatesUsers;
-
-class LoginController extends Controller
-{
-    use AuthenticatesUsers;
-
-    public function __construct()
-    {
-        $this->middleware(['saml', 'guest'], ['except' => 'logout']);
-    }
-}
-```
-
-There is also a aliased middleware that will need to be added to your `LoginController`.
-
-## User requesting the SP and are logged into your idP...
-
-Upon request of the SP they will be redirected to your `login_uri` with a `SAMLRequest`. The middleware will recognize the request AND that the user is logged in.  Since the user is already authenticated, a form will be created and submitted back to the SP where the user will be logged in.
-
-When adding the SamlidpServiceProvider, this middleware is installed for you by default.
