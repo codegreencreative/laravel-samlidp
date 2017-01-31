@@ -7,6 +7,7 @@ use LightSaml\Credential\KeyHelper;
 use LightSaml\Credential\X509Certificate;
 use LightSaml\Model\Protocol\AuthnRequest;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
+use LightSaml\Model\Protocol\LogoutRequest;
 use Symfony\Component\HttpFoundation\Request;
 use LightSaml\Model\Context\DeserializationContext;
 
