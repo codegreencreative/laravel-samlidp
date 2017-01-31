@@ -155,13 +155,13 @@ trait AuthenticatesUsers
      */
     public function logout(Request $request)
     {
+        new SamlidpLogout($request, auth()->user());
+
         $this->guard()->logout();
 
         $request->session()->flush();
 
         $request->session()->regenerate();
-
-        new SamlidpLogout;
 
         return redirect('/');
     }
