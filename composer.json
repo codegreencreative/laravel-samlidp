@@ -1,6 +1,8 @@
 {
     "name": "codegreencreative/laravel-samlidp",
     "require": {
+        "php": ">=5.5.9",
+        "illuminate/support": "5.3.*|5.4.*",
         "lightsaml/lightsaml": "^1.2"
     },
     "autoload": {
