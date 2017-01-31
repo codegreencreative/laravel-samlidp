@@ -23,18 +23,16 @@ class SamlidpLogout
     {
         $xml = gzinflate(base64_decode($request->get('SAMLRequest')));
 
-        dd($xml);
-
         $deserializationContext = new DeserializationContext;
         $deserializationContext->getDocument()->loadXML($xml);
 
-        $authn_request = new AuthnRequest;
-        $authn_request->deserialize($deserializationContext->getDocument()->firstChild, $deserializationContext);
+        $logout_request = new LogoutRequest;
+        $logout_request->deserialize($deserializationContext->getDocument()->firstChild, $deserializationContext);
 
-        $this->service_provider = $this->getServiceProvider($authn_request);
+        $this->service_provider = $this->getServiceProvider($logout_request);
 
         // Logging
-        $this->samlLog('Service Provider: ' . $authn_request->getAssertionConsumerServiceURL());
+        $this->samlLog('Service Provider: ' . $logout_request->getAssertionConsumerServiceURL());
         $this->samlLog('Service Provider (base64): ' . $this->service_provider);
 
         $this->destination = config(sprintf('samlidp.sp.%s.logout', $this->service_provider));
@@ -42,7 +40,7 @@ class SamlidpLogout
         $this->certificate = X509Certificate::fromFile(config('samlidp.crt'));
         $this->private_key = KeyHelper::createPrivateKey(config('samlidp.key'), '', true, XMLSecurityKey::RSA_SHA256);
 
-        return $this->samlResponse($authn_request, $user, $request);
+        return $this->samlResponse($logout_request, $user, $request);
     }
 
 }
