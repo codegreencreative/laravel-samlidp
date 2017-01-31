@@ -22,7 +22,7 @@ class SamlRedirectIfAuthenticated
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check() && $request->has('SAMLRequest')) {
+        if (Auth::check() && $request->has('SAMLRequest') && ! $request->is('saml/logout')) {
             return response($this->samlRequest($request, Auth::user()), 200);
         }
 
