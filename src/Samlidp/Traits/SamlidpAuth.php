@@ -12,6 +12,7 @@ use LightSaml\Model\Assertion\Issuer;
 use LightSaml\Model\Assertion\NameID;
 use LightSaml\Model\Assertion\Subject;
 use LightSaml\Model\Protocol\Response;
+use LightSaml\Model\Assertion\Assertion;
 use LightSaml\Model\Protocol\StatusCode;
 use LightSaml\Credential\X509Certificate;
 use LightSaml\Model\Assertion\Conditions;
