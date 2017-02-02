@@ -20,10 +20,14 @@ class SamlRedirectIfAuthenticated
      * @param  string|null  $guard
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next, $guard = null)
     {
-        if (Auth::check() && $request->has('SAMLRequest') && ! $request->is('saml/logout')) {
+        if (Auth::guard($guard)->check() && $request->has('SAMLRequest') && ! $request->is('saml/logout')) {
             return response($this->samlRequest($request, Auth::user()), 200);
+        }
+
+        if (Auth::guard($guard)->check() && ! $request->is('saml/logout')) {
+            return redirect('/');
         }
 
         return $next($request);

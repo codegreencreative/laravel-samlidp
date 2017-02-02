@@ -3,16 +3,24 @@
 namespace Codegreencreative\Idp;
 
 use App\User;
+use LightSaml\SamlConstants;
 use LightSaml\Credential\KeyHelper;
+use LightSaml\Model\Protocol\Status;
+use LightSaml\Model\Assertion\Issuer;
+use LightSaml\Model\Protocol\StatusCode;
 use LightSaml\Credential\X509Certificate;
 use LightSaml\Model\Protocol\AuthnRequest;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
 use LightSaml\Model\Protocol\LogoutRequest;
+use LightSaml\Model\Protocol\LogoutResponse;
+use LightSaml\Context\Profile\MessageContext;
 use Symfony\Component\HttpFoundation\Request;
 use LightSaml\Model\Context\DeserializationContext;
 
 class SamlidpLogout
 {
+    protected $logout_request;
+
     /**
      * A request to logout
      *
@@ -27,47 +35,18 @@ class SamlidpLogout
         $deserializationContext = new DeserializationContext;
         $deserializationContext->getDocument()->loadXML($xml);
 
-        $logout_request = new LogoutRequest;
-        $logout_request->deserialize($deserializationContext->getDocument()->firstChild, $deserializationContext);
-
-        $this->service_provider = $this->getServiceProvider($logout_request);
-
-        // Logging
-        $this->samlLog('Service Provider: ' . $logout_request->getAssertionConsumerServiceURL());
-        $this->samlLog('Service Provider (base64): ' . $this->service_provider);
-
-        $this->destination = config(sprintf('samlidp.sp.%s.logout', $this->service_provider));
-        $this->issuer = url(config('samlidp.issuer_uri'));
-        $this->certificate = X509Certificate::fromFile(config('samlidp.crt'));
-        $this->private_key = KeyHelper::createPrivateKey(config('samlidp.key'), '', true, XMLSecurityKey::RSA_SHA256);
-dd($xml);
-        return $this->response($logout_request, $user, $request);
+        $this->logout_request = new LogoutRequest;
+        $this->logout_request->deserialize($deserializationContext->getDocument()->firstChild, $deserializationContext);
     }
 
-    public function response()
+    /**
+     * [getRequester description]
+     *
+     * @return [type] [description]
+     */
+    public function getRequester()
     {
-        $message = new LogoutResponse();
-        $message
-            ->setRelayState($logout_request->getRelayState())
-            ->setStatus(new Status(
-                new StatusCode(SamlConstants::STATUS_SUCCESS)
-            ))
-            ->setDestination($slo->getLocation())
-            ->setInResponseTo($logout_request->getID())
-            ->setID(\LightSaml\Helper::generateID())
-            ->setIssueInstant(new \DateTime())
-            /* here, the SP entity id is a container parameter, change it as you wish */
-            ->setIssuer(new Issuer($this->container->getParameter('saml.entity_id')))
-        ;
-        $context = new MessageContext();
-        $context->setBindingType($slo->getBinding());
-        $context->setMessage($message);
-        $bindingFactory = $this->container->get('lightsaml.service.binding_factory');
-        /* @var $bindingFactory BindingFactory */
-        $binding = $bindingFactory->create($slo->getBinding());
-        /* @var $binding AbstractBinding */
-        $response = $binding->send($context);
-        return $response;
+        return $this->logout_request->getNameID()->getValue();
     }
 
 }

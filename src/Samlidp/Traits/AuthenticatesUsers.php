@@ -2,12 +2,14 @@
 
 namespace Codegreencreative\Idp\Traits;
 
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
 use Codegreencreative\Idp\SamlidpLogout;
 use Codegreencreative\Idp\Traits\SamlidpAuth;
 use Illuminate\Foundation\Auth\RedirectsUsers;
+use Codegreencreative\Idp\Events\UserLoggedOut;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 
 trait AuthenticatesUsers
@@ -155,13 +157,20 @@ trait AuthenticatesUsers
      */
     public function logout(Request $request)
     {
-        new SamlidpLogout($request, auth()->user());
+        $saml_logout = new SamlidpLogout($request, auth()->user());
 
-        $this->guard()->logout();
+        $user = User::where(config('samlidp.email_field'), $saml_logout->getRequester())->first();
 
-        $request->session()->flush();
+        if ($user->email == auth()->user()->email) {
 
-        $request->session()->regenerate();
+            $this->guard()->logout();
+
+            $request->session()->flush();
+
+            $request->session()->regenerate();
+
+            event(new UserLoggedOut($user));
+        }
 
         return redirect('/');
     }

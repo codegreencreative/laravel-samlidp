@@ -12,8 +12,10 @@ return [
     */
     // Outputs data to your laravel.log file for debugging
     'debug' => false,
+    // Define the email address field name in the users table
+    'email_field' => 'email',
     // The URI to your login page
-    'login_uri' => 'login',
+    'login_uri' => 'saml/login',
     // The URI to the saml metadata file, this describes your idP
     'issuer_uri' => 'saml/metadata',
     // Get self signed certificate

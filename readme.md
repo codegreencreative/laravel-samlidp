@@ -14,6 +14,7 @@ Add the ServiceProvider to the providers array in config/app.php
 
 ```php
 Codegreencreative\Idp\SamlidpServiceProvider::class
+Codegreencreative\Idp\EventServiceProvider::class
 ```
 
 Add Samlidp facade to the aliases array in config/app.php
