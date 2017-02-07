@@ -58,8 +58,8 @@ trait SamlidpAuth
         $this->service_provider = $this->getServiceProvider($authn_request);
 
         // Logging
-        $this->samlLog('Service Provider: ' . $authn_request->getAssertionConsumerServiceURL());
-        $this->samlLog('Service Provider (base64): ' . $this->service_provider);
+        // $this->samlLog('Service Provider: ' . $authn_request->getAssertionConsumerServiceURL());
+        // $this->samlLog('Service Provider (base64): ' . $this->service_provider);
 
         $this->destination = config(sprintf('samlidp.sp.%s.destination', $this->service_provider));
         $this->issuer = url(config('samlidp.issuer_uri'));

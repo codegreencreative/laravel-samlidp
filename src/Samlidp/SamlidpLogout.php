@@ -37,6 +37,8 @@ class SamlidpLogout
 
         $this->logout_request = new LogoutRequest;
         $this->logout_request->deserialize($deserializationContext->getDocument()->firstChild, $deserializationContext);
+dd($this->logout_request);
+        // return auth()->check() ? redirect('/') : view('auth.logout');
     }
 
     /**
