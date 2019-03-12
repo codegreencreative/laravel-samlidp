@@ -40,7 +40,7 @@ class SamlidpServiceProvider extends ServiceProvider
         $this->app->router->group([
             'group' => 'web',
             'prefix' => 'saml',
-            'namespace' => 'Codegreencreative\Idp\Http\Controllers'
+            'namespace' => 'CodeGreenCreative\SamlIdp\Http\Controllers'
         ], function(){
             require __DIR__.'/../routes/routes.php';
         });
