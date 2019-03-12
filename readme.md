@@ -23,6 +23,28 @@ config/samlidp.php
 php artisan vendor:publish --tag="samlidp_config"
 ```
 
+FileSystem configuration
+Within `config/filesystem.php` following entry needs to be added:
+```php
+    'disks' => [
+
+        ...
+
+        'samlidp' => [
+            'driver' => 'local',
+            'root' => storage_path().'/samlidp',
+        ],
+
+    ],
+```
+
+Next we will create the necessary storage path and certificate files
+
+```shell
+mkdir -p storage/samlidp
+touch storage/samlidp/{cert.pem,key.pem}
+```
+
 # Create a Self Signed Certificate (to be used later)
 
 First create folder structure `path/to/project/storage/certs`
