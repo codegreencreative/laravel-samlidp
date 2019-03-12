@@ -23,12 +23,6 @@ config/samlidp.php
 php artisan vendor:publish --tag="samlidp_config"
 ```
 
-Will publish a view for the login screen at:
-
-`resources/views/vendor/samlidp/auth/login.blade.php`
-
-You may modify this file as needed but pay close attention to the action on the form. Very important.
-
 # Create a Self Signed Certificate (to be used later)
 
 First create folder structure `path/to/project/storage/certs`
