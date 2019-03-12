@@ -38,8 +38,6 @@ Within `config/filesystem.php` following entry needs to be added:
 ],
 ```
 
-
-
 # Create a Self Signed Certificate (to be used later)
 
 Next we will create the necessary storage path and certificate files
@@ -49,16 +47,96 @@ mkdir -p storage/samlidp
 touch storage/samlidp/{cert.pem,key.pem}
 # Then
 cd storage/samlidp
-openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout key.pem -out cert.pem
+openssl req -x509 -sha256 -nodes -days 7300 -newkey rsa:2048 -keyout key.pem -out cert.pem
 ```
 
 Change the -days to what your application requires. `20 years = 7300`
 
 ## Usage
 
-To begin using SAML use the login route: http://example.com/saml/login
+Within your login view, problably resources/views/auth/login.blade.php add a SAMLRequest field beneath the CSRF field:
+```php
+    @csrf
+    @samlidpinput
+```
+The SAMLRequest field will be filled automatically when a SAMLRequest is sent by a http request and therefore initiate a SAML authentication attempt. To initiate the SAML auth, the login and redirect functions need to be modified. First, open `App\Http\Controllers\Auth\LoginController` and add the `SamlIdpAuth` trait and override the `authenticated` method.
 
-This route will authenticate your user and perform the SAML actions as necessary for your Service Provider.
+```php
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use App\Models\Identity;
+use App\Notifications\NewDeviceLogin;
+use geoip;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Jenssegers\Agent\Facades\Agent;
+use CodeGreenCreative\SamlIdp\Traits\SamlIdpAuth;
+
+class LoginController extends Controller
+{
+
+    ...
+
+    use AuthenticatesUsers, SamlAuth;
+
+    ...
+
+    /**
+     * Override the authenticated protected method from AuthenticatesUsers trait
+     *
+     * @param  Request $request [description]
+     * @param  [type]  $user    [description]
+     * @return [type]           [description]
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        if (auth()->check() && request('SAMLRequest')) {
+            $this->handleSamlLoginRequest($request);
+        }
+    }
+
+```
+
+To allow later direct redirection when somebody is already logged in, we need to add also some lines to `App\Http\Middleware\RedirectIfAuthenticated`
+
+```php
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Support\Facades\Auth;
+use CodeGreenCreative\SamlIdp\Traits\SamlIdpAuth;
+
+class RedirectIfAuthenticated
+{
+    use SamlAuth;
+
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @param  string|null  $guard
+     * @return mixed
+     */
+    public function handle($request, Closure $next, $guard = null)
+    {
+        if (Auth::check() && isset($request['SAMLRequest'])) {
+            $this->handleSamlLoginRequest($request);
+        }
+
+        if (Auth::guard($guard)->check()) {
+            return redirect('/home');
+        }
+
+        return $next($request);
+    }
+}
+```
 
 ## Config
 
