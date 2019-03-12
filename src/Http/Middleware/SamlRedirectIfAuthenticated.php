@@ -7,7 +7,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use CodeGreenCreative\SamlIdp\Traits\SamlidpAuth;
 
-
 class SamlRedirectIfAuthenticated
 {
     use SamlidpAuth;

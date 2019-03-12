@@ -13,6 +13,7 @@ namespace CodeGreenCreative\SamlIdp;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class SamlidpServiceProvider extends ServiceProvider
@@ -36,13 +37,13 @@ class SamlidpServiceProvider extends ServiceProvider
             __DIR__.'/../config/samlidp.php' => config_path('samlidp.php'),
         ], 'samlidp_config');
         // Load routes
-        // $this->app->router->group([
-        //     'group' => 'web',
-        //     'prefix' => 'saml',
-        //     'namespace' => 'CodeGreenCreative\SamlIdp\Http\Controllers'
-        // ], function () {
-        //     require __DIR__.'/../routes/routes.php';
-        // });
+        Route::group([
+            'prefix' => 'saml',
+            'namespace' => 'CodeGreenCreative\SamlIdp\Http\Controllers',
+            'middleware' => 'web',
+        ], function () {
+            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        });
         // Load views
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'samlidp');
         // Publish them as well
@@ -76,7 +77,7 @@ class SamlidpServiceProvider extends ServiceProvider
     {
         Blade::directive('samlidpinput', function ($expression) {
             if (request()->filled('SAMLRequest')) {
-                return view('samlidp::components.input', ['value' => request('SAMLRequest')]);
+                return view('samlidp::components.input');
             }
         });
     }

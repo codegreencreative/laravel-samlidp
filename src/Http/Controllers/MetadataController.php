@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeGreenCreative\SamlIdp\Http\Controllers\Saml;
+namespace CodeGreenCreative\SamlIdp\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 

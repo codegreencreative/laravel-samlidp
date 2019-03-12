@@ -56,48 +56,18 @@ Change the -days to what your application requires. `20 years = 7300`
 
 Within your login view, problably resources/views/auth/login.blade.php add a SAMLRequest field beneath the CSRF field:
 ```php
-    @csrf
-    @samlidpinput
+@csrf
+@samlidpinput
 ```
 The SAMLRequest field will be filled automatically when a SAMLRequest is sent by a http request and therefore initiate a SAML authentication attempt. To initiate the SAML auth, the login and redirect functions need to be modified. First, open `App\Http\Controllers\Auth\LoginController` and add the `SamlIdpAuth` trait and override the `authenticated` method.
 
+In your login controller remove
 ```php
-<?php
-
-namespace App\Http\Controllers\Auth;
-
-use App\Http\Controllers\Controller;
-use App\Models\Identity;
-use App\Notifications\NewDeviceLogin;
-use geoip;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Http\Request;
-use Jenssegers\Agent\Facades\Agent;
-use CodeGreenCreative\SamlIdp\Traits\SamlIdpAuth;
-
-class LoginController extends Controller
-{
-
-    ...
-
-    use AuthenticatesUsers, SamlAuth;
-
-    ...
-
-    /**
-     * Override the authenticated protected method from AuthenticatesUsers trait
-     *
-     * @param  Request $request [description]
-     * @param  [type]  $user    [description]
-     * @return [type]           [description]
-     */
-    protected function authenticated(Request $request, $user)
-    {
-        if (auth()->check() && request('SAMLRequest')) {
-            $this->handleSamlLoginRequest($request);
-        }
-    }
-
+```
+with
+```php
+use CodeGreenCreative\SamlIdp\Traits\AuthenticatesUsers;
 ```
 
 To allow later direct redirection when somebody is already logged in, we need to add also some lines to `App\Http\Middleware\RedirectIfAuthenticated`
@@ -125,11 +95,11 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if (Auth::check() && isset($request['SAMLRequest'])) {
-            $this->handleSamlLoginRequest($request);
+        if (Auth::guard($guard)->check() && $request->has('SAMLRequest') && ! $request->is('saml/logout')) {
+            return response($this->samlRequest($request, Auth::user()), 200);
         }
 
-        if (Auth::guard($guard)->check()) {
+        if (Auth::guard($guard)->check() && ! $request->is('saml/logout')) {
             return redirect('/home');
         }
 
@@ -150,7 +120,6 @@ Sample config/samlidp.php file
 <?php
 
 return [
-
     // The URI to your login page
     'login_uri' => 'login',
     // The URI to the saml metadata file, this describes your idP
