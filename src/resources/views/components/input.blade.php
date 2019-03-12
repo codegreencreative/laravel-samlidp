@@ -1,1 +1,1 @@
-<input type="hidden" id="SAMLRequest" name="SAMLRequest" value="{{ $slot }}" />
+<input type="hidden" id="SAMLRequest" name="SAMLRequest" value="{{ $value }}" />

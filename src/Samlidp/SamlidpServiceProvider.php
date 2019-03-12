@@ -10,8 +10,9 @@ namespace CodeGreenCreative\SamlIdp;
  * @package Zizaco\Entrust
  */
 
-use Illuminate\Routing\Router;
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class SamlidpServiceProvider extends ServiceProvider
@@ -35,13 +36,13 @@ class SamlidpServiceProvider extends ServiceProvider
             __DIR__.'/../config/samlidp.php' => config_path('samlidp.php'),
         ], 'samlidp_config');
         // Load routes
-        $this->app->router->group([
-            'group' => 'web',
-            'prefix' => 'saml',
-            'namespace' => 'CodeGreenCreative\SamlIdp\Http\Controllers'
-        ], function () {
-            require __DIR__.'/../routes/routes.php';
-        });
+        // $this->app->router->group([
+        //     'group' => 'web',
+        //     'prefix' => 'saml',
+        //     'namespace' => 'CodeGreenCreative\SamlIdp\Http\Controllers'
+        // ], function () {
+        //     require __DIR__.'/../routes/routes.php';
+        // });
         // Load views
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'samlidp');
         // Publish them as well
@@ -73,7 +74,11 @@ class SamlidpServiceProvider extends ServiceProvider
      */
     public function loadBladeComponents()
     {
-        Blade::component('samlidp:components.input', 'samlidpInput');
+        Blade::directive('samlidpinput', function ($expression) {
+            if (request()->filled('SAMLRequest')) {
+                return view('samlidp::components.input', ['value' => request('SAMLRequest')]);
+            }
+        });
     }
 
     /**
