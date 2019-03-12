@@ -108,6 +108,23 @@ class RedirectIfAuthenticated
 }
 ```
 
+Update App\Http\Kernel protected $routeMiddleware with new `saml` middleware.
+
+```php
+protected $routeMiddleware = [
+
+    ...
+
+    'saml' => \CodeGreenCreative\SamlIdp\Http\Middleware\SamlRedirectIfAuthenticated::class
+];
+```
+
+Update LoginController with new middleware
+
+```php
+$this->middleware('saml');
+```
+
 ## Config
 
 After you publish the config file, you will need to set up your Service Providers. The key for the Service Provider is a base 64 encoded Consumer Service (ACS) URL. You can get this information from your Service Provider, but you will need to base 64 encode the URL and place it in your config. This is due to config dot notation.

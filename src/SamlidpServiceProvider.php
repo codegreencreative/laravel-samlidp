@@ -19,43 +19,21 @@ use Illuminate\Support\ServiceProvider;
 class SamlidpServiceProvider extends ServiceProvider
 {
     /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = false;
-
-    /**
      * Bootstrap the application events.
      *
      * @return void
      */
     public function boot(Router $router)
     {
-        // Publish config files
-        $this->publishes([
-            __DIR__.'/../config/samlidp.php' => config_path('samlidp.php'),
-        ], 'samlidp_config');
-        // Load routes
-        Route::group([
-            'prefix' => 'saml',
-            'namespace' => 'CodeGreenCreative\SamlIdp\Http\Controllers',
-            'middleware' => 'web',
-        ], function () {
-            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
-        });
-        // Load views
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'samlidp');
-        // Publish them as well
-        // $this->publishes([
-        //     __DIR__.'/../resources/views' => resource_path('views/vendor/samlidp'),
-        // ], 'samlidp_views');
-        // Add global middleware
+        $this->registerEvents();
+        $this->registerRoutes();
+        $this->registerResources();
+        $this->registerBladeComponents();
+
         $router->aliasMiddleware(
             'samlidp',
             \CodeGreenCreative\SamlIdp\Http\Middleware\SamlRedirectIfAuthenticated::class
         );
-        $this->loadBladeComponents();
     }
 
     /**
@@ -65,15 +43,43 @@ class SamlidpServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerSamlidp();
-        $this->mergeConfig();
+        $this->configure();
+        $this->offerPublishing();
+        $this->registerServices();
+        $this->registerCommands();
     }
 
     /**
-     * [loadBladeComponents description]
+     * [configure description]
      * @return [type] [description]
      */
-    public function loadBladeComponents()
+    private function configure()
+    {
+        $this->mergeConfigFrom(__DIR__.'/../config/samlidp.php', 'samlidp');
+    }
+
+    /**
+     * [offerPublishing description]
+     * @return [type] [description]
+     */
+    public function offerPublishing()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__.'/../resources/views' => resource_path('views/vendor/samlidp'),
+            ], 'samlidp_views');
+
+            $this->publishes([
+                __DIR__.'/../config/samlidp.php' => config_path('samlidp.php'),
+            ], 'samlidp_config');
+        }
+    }
+
+    /**
+     * [registerBladeComponents description]
+     * @return [type] [description]
+     */
+    public function registerBladeComponents()
     {
         Blade::directive('samlidpinput', function ($expression) {
             if (request()->filled('SAMLRequest')) {
@@ -87,11 +93,44 @@ class SamlidpServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function registerSamlidp()
+    private function registerServices()
     {
         $this->app->singleton('samlidp', function ($app) {
             return new Samlidp;
         });
+    }
+
+    /**
+     * [registerEvents description]
+     * @return [type] [description]
+     */
+    private function registerEvents()
+    {
+        # code...
+    }
+
+    /**
+     * [registerRoutes description]
+     * @return [type] [description]
+     */
+    private function registerRoutes()
+    {
+        Route::group([
+            'prefix' => 'saml',
+            'namespace' => 'CodeGreenCreative\SamlIdp\Http\Controllers',
+            'middleware' => 'web',
+        ], function () {
+            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        });
+    }
+
+    /**
+     * [registerResources description]
+     * @return [type] [description]
+     */
+    private function registerResources()
+    {
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'samlidp');
     }
 
     /**
@@ -101,19 +140,11 @@ class SamlidpServiceProvider extends ServiceProvider
      */
     private function registerCommands()
     {
-        // $this->app->singleton('command.entrust.migration', function ($app) {
-        //     return new MigrationCommand();
-        // });
-    }
-
-    /**
-     * Merges user's and entrust's configs.
-     *
-     * @return void
-     */
-    private function mergeConfig()
-    {
-        $this->mergeConfigFrom(__DIR__.'/../config/samlidp.php', 'samlidp');
+        // if ($this->app->runningInConsole()) {
+        //     $this->commands([
+        //         FooCommand::class
+        //     ]);
+        // }
     }
 
     /**
