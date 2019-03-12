@@ -14,7 +14,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "CodeGreenCreative\\SamlIdp\\SamlIdpServiceProvider"
+                "CodeGreenCreative\\SamlIdp\\SamlidpServiceProvider"
             ],
             "aliases": {
                 "Bar": "CodeGreenCreative\\SamlIdp\\SamlIdpFacade"
