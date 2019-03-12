@@ -26,32 +26,30 @@ php artisan vendor:publish --tag="samlidp_config"
 FileSystem configuration
 Within `config/filesystem.php` following entry needs to be added:
 ```php
-    'disks' => [
+'disks' => [
 
-        ...
+    ...
 
-        'samlidp' => [
-            'driver' => 'local',
-            'root' => storage_path().'/samlidp',
-        ],
-
+    'samlidp' => [
+        'driver' => 'local',
+        'root' => storage_path() . '/samlidp',
     ],
+
+],
 ```
+
+
+
+# Create a Self Signed Certificate (to be used later)
 
 Next we will create the necessary storage path and certificate files
 
 ```shell
 mkdir -p storage/samlidp
 touch storage/samlidp/{cert.pem,key.pem}
-```
-
-# Create a Self Signed Certificate (to be used later)
-
-First create folder structure `path/to/project/storage/certs`
-
-```shell
-cd path/to/project/storage/certs
-openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout samlidp.key -out samlidp.crt
+# Then
+cd storage/samlidp
+openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout key.pem -out cert.pem
 ```
 
 Change the -days to what your application requires. `20 years = 7300`
