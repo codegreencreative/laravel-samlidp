@@ -10,22 +10,14 @@ Require this package with composer:
 composer require codegreencreative/laravel-samlidp
 ```
 
-Add the ServiceProvider to the providers array in config/app.php
+Laravel 5.5+ shoudl auto discover the package, if not, run
 
-```php
-CodeGreenCreative\SamlIdp\SamlidpServiceProvider::class
-CodeGreenCreative\SamlIdp\EventServiceProvider::class
+```shell
+php artisan package:discover
 ```
 
-Add Samlidp facade to the aliases array in config/app.php
-
-```php
-'Samlidp' => CodeGreenCreative\SamlIdp\Facades\Samlidp::class
-```
-
-Publish config and samlidp views
+Publish config
 config/samlidp.php
-resources/views/vendor/samlidp/
 
 ```shell
 php artisan vendor:publish --tag="samlidp_config"
