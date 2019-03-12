@@ -1,11 +1,11 @@
 <?php
 
-namespace Codegreencreative\Idp\Http\Middleware;
+namespace CodeGreenCreative\SamlIdp\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Codegreencreative\Idp\Traits\SamlidpAuth;
+use CodeGreenCreative\SamlIdp\Traits\SamlidpAuth;
 
 
 class SamlRedirectIfAuthenticated

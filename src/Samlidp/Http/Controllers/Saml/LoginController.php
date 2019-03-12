@@ -1,9 +1,9 @@
 <?php
 
-namespace Codegreencreative\Idp\Http\Controllers;
+namespace CodeGreenCreative\SamlIdp\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Codegreencreative\Idp\Traits\AuthenticatesUsers;
+use CodeGreenCreative\SamlIdp\Traits\AuthenticatesUsers;
 
 class LoginController extends Controller
 {

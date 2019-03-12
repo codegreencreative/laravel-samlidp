@@ -1,15 +1,15 @@
 <?php
 
-namespace Codegreencreative\Idp\Traits;
+namespace CodeGreenCreative\SamlIdp\Traits;
 
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
-use Codegreencreative\Idp\SamlidpLogout;
-use Codegreencreative\Idp\Traits\SamlidpAuth;
+use CodeGreenCreative\SamlIdp\SamlidpLogout;
+use CodeGreenCreative\SamlIdp\Traits\SamlidpAuth;
 use Illuminate\Foundation\Auth\RedirectsUsers;
-use Codegreencreative\Idp\Events\UserLoggedOut;
+use CodeGreenCreative\SamlIdp\Events\UserLoggedOut;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 
 trait AuthenticatesUsers

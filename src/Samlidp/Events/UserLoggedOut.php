@@ -1,6 +1,6 @@
 <?php
 
-namespace Codegreencreative\Idp\Events;
+namespace CodeGreenCreative\SamlIdp\Events;
 
 use App\User;
 

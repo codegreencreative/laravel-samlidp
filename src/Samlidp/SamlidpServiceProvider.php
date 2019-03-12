@@ -1,6 +1,6 @@
 <?php
 
-namespace Codegreencreative\Idp;
+namespace CodeGreenCreative\SamlIdp;
 
 /**
  * This file is part of Entrust,
@@ -13,7 +13,6 @@ namespace Codegreencreative\Idp;
 use Illuminate\Routing\Router;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider;
-
 
 class SamlidpServiceProvider extends ServiceProvider
 {
@@ -34,26 +33,27 @@ class SamlidpServiceProvider extends ServiceProvider
         // Publish config files
         $this->publishes([
             __DIR__.'/../config/samlidp.php' => config_path('samlidp.php'),
-        ]);
+        ], 'samlidp_config');
         // Load routes
-        // $this->loadRoutesFrom(__DIR__.'/../routes/routes.php');
         $this->app->router->group([
             'group' => 'web',
             'prefix' => 'saml',
             'namespace' => 'CodeGreenCreative\SamlIdp\Http\Controllers'
-        ], function(){
+        ], function () {
             require __DIR__.'/../routes/routes.php';
         });
-        // Register blade directives
-        $this->bladeDirectives();
         // Load views
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'samlidp');
         // Publish them as well
-        $this->publishes([
-            __DIR__.'/../resources/views' => resource_path('views/vendor/samlidp'),
-        ]);
+        // $this->publishes([
+        //     __DIR__.'/../resources/views' => resource_path('views/vendor/samlidp'),
+        // ], 'samlidp_views');
         // Add global middleware
-        $router->aliasMiddleware('saml', \Codegreencreative\Idp\Http\Middleware\SamlRedirectIfAuthenticated::class);
+        $router->aliasMiddleware(
+            'samlidp',
+            \CodeGreenCreative\SamlIdp\Http\Middleware\SamlRedirectIfAuthenticated::class
+        );
+        $this->loadBladeComponents();
     }
 
     /**
@@ -64,22 +64,16 @@ class SamlidpServiceProvider extends ServiceProvider
     public function register()
     {
         $this->registerSamlidp();
-
         $this->mergeConfig();
     }
 
     /**
-     * Register the blade directives
-     *
-     * @return void
+     * [loadBladeComponents description]
+     * @return [type] [description]
      */
-    private function bladeDirectives()
+    public function loadBladeComponents()
     {
-        if (!class_exists('\Blade')) return;
-
-        // @samlfields
-        // \Blade::directive('samlidpfields', function($expression) {
-        // });
+        Blade::component('samlidp:components.input', 'samlidpInput');
     }
 
     /**
@@ -89,13 +83,7 @@ class SamlidpServiceProvider extends ServiceProvider
      */
     private function registerSamlidp()
     {
-        // $this->app->bind('entrust', function ($app) {
-        //     return new Entrust($app);
-        // });
-
-        // $this->app->alias('entrust', 'Zizaco\Entrust\Entrust');
-        //
-        $this->app->singleton('samlidp', function($app) {
+        $this->app->singleton('samlidp', function ($app) {
             return new Samlidp;
         });
     }
@@ -119,9 +107,7 @@ class SamlidpServiceProvider extends ServiceProvider
      */
     private function mergeConfig()
     {
-        $this->mergeConfigFrom(
-            __DIR__.'/../config/samlidp.php', 'samlidp'
-        );
+        $this->mergeConfigFrom(__DIR__.'/../config/samlidp.php', 'samlidp');
     }
 
     /**

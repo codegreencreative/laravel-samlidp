@@ -13,14 +13,14 @@ composer require codegreencreative/laravel-samlidp
 Add the ServiceProvider to the providers array in config/app.php
 
 ```php
-Codegreencreative\Idp\SamlidpServiceProvider::class
-Codegreencreative\Idp\EventServiceProvider::class
+CodeGreenCreative\SamlIdp\SamlidpServiceProvider::class
+CodeGreenCreative\SamlIdp\EventServiceProvider::class
 ```
 
 Add Samlidp facade to the aliases array in config/app.php
 
 ```php
-'Samlidp' => Codegreencreative\Idp\Facades\Samlidp::class
+'Samlidp' => CodeGreenCreative\SamlIdp\Facades\Samlidp::class
 ```
 
 Publish config and samlidp views
@@ -28,7 +28,7 @@ config/samlidp.php
 resources/views/vendor/samlidp/
 
 ```shell
-php artisan vendor:publish --provider="Codegreencreative\Idp\SamlidpServiceProvider"
+php artisan vendor:publish --tag="samlidp_config"
 ```
 
 Will publish a view for the login screen at:

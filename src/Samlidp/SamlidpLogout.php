@@ -1,6 +1,6 @@
 <?php
 
-namespace Codegreencreative\Idp;
+namespace CodeGreenCreative\SamlIdp;
 
 use App\User;
 use LightSaml\SamlConstants;

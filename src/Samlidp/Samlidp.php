@@ -1,6 +1,6 @@
 <?php
 
-namespace Codegreencreative\Idp;
+namespace CodeGreenCreative\SamlIdp;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -20,5 +20,4 @@ class Samlidp extends Facade
             ', request()->get('SAMLRequest'), request()->get('RelayState'));
         }
     }
-
 }

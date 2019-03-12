@@ -1,14 +1,14 @@
 {
     "name": "codegreencreative/laravel-samlidp",
     "require": {
-        "php": ">=5.5.9",
-        "illuminate/support": ">=5.3.0",
-        "lightsaml/lightsaml": "^1.2",
-        "illuminate/routing": "^5.4"
+        "php": "^7.1.3",
+        "illuminate/support": "^5.6",
+        "illuminate/routing": "^5.6",
+        "lightsaml/lightsaml": "^1.4"
     },
     "autoload": {
         "psr-4": {
-            "Codegreencreative\\Idp\\": "src/"
+            "CodeGreenCreative\\SamlIdp\\": "src/"
         }
     }
 }

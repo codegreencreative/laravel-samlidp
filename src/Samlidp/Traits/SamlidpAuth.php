@@ -1,6 +1,6 @@
 <?php
 
-namespace Codegreencreative\Idp\Traits;
+namespace CodeGreenCreative\SamlIdp\Traits;
 
 use App\User;
 use LightSaml\Helper;
@@ -19,7 +19,7 @@ use LightSaml\Model\Assertion\Conditions;
 use LightSaml\Model\Protocol\AuthnRequest;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
 use LightSaml\Model\Assertion\AuthnContext;
-use Codegreencreative\Idp\Traits\SamlidpLog;
+use CodeGreenCreative\SamlIdp\Traits\SamlidpLog;
 use LightSaml\Model\XmlDSig\SignatureWriter;
 use LightSaml\Context\Profile\MessageContext;
 use LightSaml\Model\Assertion\AuthnStatement;
