@@ -10,5 +10,15 @@
         "psr-4": {
             "CodeGreenCreative\\SamlIdp\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "CodeGreenCreative\\SamlIdp\\SamlIdpServiceProvider"
+            ],
+            "aliases": {
+                "Bar": "CodeGreenCreative\\SamlIdp\\SamlIdpFacade"
+            }
+        }
     }
 }
