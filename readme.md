@@ -28,13 +28,12 @@ Within `config/filesystem.php` following entry needs to be added:
 ```php
 'disks' => [
 
-    ...
+        ...
 
-    'samlidp' => [
-        'driver' => 'local',
-        'root' => storage_path() . '/samlidp',
-    ],
-
+        'samlidp' => [
+            'driver' => 'local',
+            'root' => storage_path() . '/samlidp',
+        ]
 ],
 ```
 

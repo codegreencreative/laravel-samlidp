@@ -2,24 +2,21 @@
 
 namespace CodeGreenCreative\SamlIdp\Listeners;
 
-use CodeGreenCreative\SamlIdp\Traits\SamlidpAuth;
-use Illuminate\Auth\Events\Authenticated;
-use Illuminate\Http\Response;
+use CodeGreenCreative\SamlIdp\Jobs\SamlSso;
+use Illuminate\Auth\Events\Login;
 
-class SamlRequest
+class SamlLogin
 {
-    use SamlidpAuth;
-
     /**
      * Listen for the Authenticated event
      *
      * @param  Authenticated $event [description]
      * @return [type]               [description]
      */
-    public function handle(Authenticated $event)
+    public function handle(Login $event)
     {
         if (request()->filled('SAMLRequest') && ! request()->is('saml/logout')) {
-            abort(response($this->samlRequest(request(), auth()->user()), 200));
+            abort(response(SamlSso::dispatchNow()), 302);
         }
     }
 }

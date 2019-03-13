@@ -14,7 +14,10 @@ trait EventMap
             'CodeGreenCreative\SamlIdp\Listeners\SamlLogout',
         ],
         'Illuminate\Auth\Events\Authenticated' => [
-            'CodeGreenCreative\SamlIdp\Listeners\SamlRequest',
+            'CodeGreenCreative\SamlIdp\Listeners\SamlAuthenticated',
+        ],
+        'Illuminate\Auth\Events\Login' => [
+            'CodeGreenCreative\SamlIdp\Listeners\SamlLogin',
         ],
     ];
 }

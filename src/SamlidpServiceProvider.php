@@ -71,6 +71,11 @@ class SamlidpServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../config/samlidp.php' => config_path('samlidp.php'),
             ], 'samlidp_config');
+
+            // Create storage/samlidp directory
+            if (! file_exists(storage_path() . "/samlidp")) {
+                mkdir(storage_path() . "/samlidp", 0755, true);
+            }
         }
     }
 
@@ -80,7 +85,8 @@ class SamlidpServiceProvider extends ServiceProvider
      */
     public function registerBladeComponents()
     {
-        Blade::directive('samlidpinput', function ($expression) {
+        Blade::directive('samlidp', function ($expression) {
+            \Log::info($_GET['SAMLRequest'] ?? 'Nope');
             if (request()->filled('SAMLRequest')) {
                 return view('samlidp::components.input');
             }
