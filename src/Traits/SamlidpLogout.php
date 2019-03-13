@@ -50,5 +50,4 @@ dd($this->logout_request);
     {
         return $this->logout_request->getNameID()->getValue();
     }
-
 }

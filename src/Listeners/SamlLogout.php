@@ -2,19 +2,19 @@
 
 namespace CodeGreenCreative\SamlIdp\Listeners;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use CodeGreenCreative\SamlIdp\Events\UserLoggedOut;
+use Illuminate\Auth\Events\Logout;
 
-class BroadcastSAMLLogout implements ShouldQueue
+class SamlLogout
 {
     /**
-     * [handle description]
+     * Upon logout, initiate SAML SLO process for each Service Provider
      *
-     * @param  BroadcastSAMLLogout $event [description]
-     * @return [type]                     [description]
+     * @param  Logout $event
+     * @return void
      */
-    public function handle(UserLoggedOut $event)
+    public function handle(Logout $event)
     {
+        dd('here');
         // Need to broadcast to our other SAML apps to log out!
         // Loop through our service providers and "touch" the logout URL's
         foreach (config('samlidp.sp') as $sp) {

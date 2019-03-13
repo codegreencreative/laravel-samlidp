@@ -10,6 +10,8 @@ namespace CodeGreenCreative\SamlIdp;
  * @package Zizaco\Entrust
  */
 
+use CodeGreenCreative\SamlIdp\Traits\EventMap;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
@@ -18,6 +20,8 @@ use Illuminate\Support\ServiceProvider;
 
 class SamlidpServiceProvider extends ServiceProvider
 {
+    use EventMap;
+
     /**
      * Bootstrap the application events.
      *
@@ -29,11 +33,6 @@ class SamlidpServiceProvider extends ServiceProvider
         $this->registerRoutes();
         $this->registerResources();
         $this->registerBladeComponents();
-
-        $router->aliasMiddleware(
-            'samlidp',
-            \CodeGreenCreative\SamlIdp\Http\Middleware\SamlRedirectIfAuthenticated::class
-        );
     }
 
     /**
@@ -106,7 +105,12 @@ class SamlidpServiceProvider extends ServiceProvider
      */
     private function registerEvents()
     {
-        # code...
+        $events = $this->app->make(Dispatcher::class);
+        foreach ($this->events as $event => $listeners) {
+            foreach ($listeners as $listener) {
+                $events->listen($event, $listener);
+            }
+        }
     }
 
     /**

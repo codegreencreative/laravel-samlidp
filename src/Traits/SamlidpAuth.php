@@ -2,7 +2,7 @@
 
 namespace CodeGreenCreative\SamlIdp\Traits;
 
-use App\User;
+use App\Models\User;
 use LightSaml\Helper;
 use LightSaml\SamlConstants;
 use LightSaml\Credential\KeyHelper;
