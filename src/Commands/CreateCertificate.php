@@ -13,10 +13,8 @@ class CreateCertificate extends Command
      */
     protected $signature = 'samlidp:cert
                             {--days=7300 : Number of days to add from today as the expiration date}
-                            {--keyname=key : Key file name}
-                            {--keyext=pem : Key file extension name}
-                            {--certname=cert : Certificate file name}
-                            {--certext=pem : Certificate file extension name}';
+                            {--keyname=key.pem : Full name of the certificate key file}
+                            {--certname=cert.pem : Full name to the certificate file}';
 
     /**
      * The console command description.
@@ -48,12 +46,10 @@ class CreateCertificate extends Command
         }
 
         $storagePath = storage_path() . "/samlidp";
-        $days = $this->option('days') ?? 7300;
-        $keyname = $this->option('keyname') ?? 'key';
-        $keyext = $this->option('keyext') ?? 'pem';
-        $certname = $this->option('certname') ?? 'cert';
-        $certext = $this->option('certext') ?? 'pem';
+        $days = $this->option('days');
+        $keyname = $this->option('keyname');
+        $certname = $this->option('certname');
 
-        exec("openssl req -x509 -sha256 -nodes -days {$days} -newkey rsa:2048 -keyout {$storagePath}/{$keyname}.{$keyext} -out {$storagePath}/{$certname}.{$certext}");
+        exec("openssl req -x509 -sha256 -nodes -days {$days} -newkey rsa:2048 -keyout {$storagePath}/{$keyname} -out {$storagePath}/{$certname}");
     }
 }
