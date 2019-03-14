@@ -43,6 +43,7 @@ class CreateServiceProvider extends Command
         $encodedAcsUrl = base64_encode($acsUrl);
 
         $this->line('SamlIdp config:');
+        $this->line('');
         $this->line("'{$encodedAcsUrl}' => [");
         $this->line("    'destination' => '{$acsUrl}',");
         $this->line("    'logout' => '{$logoutUrl}',");
