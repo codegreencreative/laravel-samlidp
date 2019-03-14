@@ -12,7 +12,6 @@ namespace CodeGreenCreative\SamlIdp;
 
 use CodeGreenCreative\SamlIdp\Traits\EventMap;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
@@ -54,7 +53,7 @@ class SamlidpServiceProvider extends ServiceProvider
      */
     private function configure()
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/samlidp.php', 'samlidp');
+        $this->mergeConfigFrom(__DIR__ . '/../config/samlidp.php', 'samlidp');
     }
 
     /**
@@ -65,15 +64,15 @@ class SamlidpServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../resources/views' => resource_path('views/vendor/samlidp'),
+                __DIR__ . '/../resources/views' => resource_path('views/vendor/samlidp'),
             ], 'samlidp_views');
 
             $this->publishes([
-                __DIR__.'/../config/samlidp.php' => config_path('samlidp.php'),
+                __DIR__ . '/../config/samlidp.php' => config_path('samlidp.php'),
             ], 'samlidp_config');
 
             // Create storage/samlidp directory
-            if (! file_exists(storage_path() . "/samlidp")) {
+            if (!file_exists(storage_path() . "/samlidp")) {
                 mkdir(storage_path() . "/samlidp", 0755, true);
             }
         }
@@ -88,7 +87,7 @@ class SamlidpServiceProvider extends ServiceProvider
         Blade::directive('samlidp', function ($expression) {
             \Log::info($_GET['SAMLRequest'] ?? 'Nope');
             if (request()->filled('SAMLRequest')) {
-                return view('samlidp::components.input');
+                return "<?php echo view('samlidp::components.input'); ?>";
             }
         });
     }
@@ -130,7 +129,7 @@ class SamlidpServiceProvider extends ServiceProvider
             'namespace' => 'CodeGreenCreative\SamlIdp\Http\Controllers',
             'middleware' => 'web',
         ], function () {
-            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+            $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
         });
     }
 
@@ -140,7 +139,7 @@ class SamlidpServiceProvider extends ServiceProvider
      */
     private function registerResources()
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'samlidp');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'samlidp');
     }
 
     /**
@@ -165,7 +164,7 @@ class SamlidpServiceProvider extends ServiceProvider
     public function provides()
     {
         return [
-            'samlidp'
+            'samlidp',
         ];
     }
 }
