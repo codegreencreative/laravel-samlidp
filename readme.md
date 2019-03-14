@@ -52,13 +52,11 @@ php artisan samlidp:cert --days 7300 --keyname key --certname cert
 
 --keyname <string>
 >Prefix name to the key file
->Default: key
->Result: key.pem
+>Default: key.pem
 
 --certname <string>
 >Prefix name to the certificate file
->Default: cert
->Result: cert.pem
+>Default: cert.pem
 
 ## Usage
 
