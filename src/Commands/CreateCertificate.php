@@ -40,15 +40,21 @@ class CreateCertificate extends Command
      */
     public function handle()
     {
-        // Create storage/samlidp directory
-        if (!file_exists(storage_path() . "/samlidp")) {
-            mkdir(storage_path() . "/samlidp", 0755, true);
-        }
-
         $storagePath = storage_path() . "/samlidp";
         $days = $this->option('days');
         $keyname = $this->option('keyname');
         $certname = $this->option('certname');
+
+        // Create storage/samlidp directory
+        if (!file_exists($storagePath)) {
+            mkdir($storagePath, 0755, true);
+        }
+
+        if (file_exists("$storagePath/$keyname") || file_exists("$storagePath/$certname")) {
+            if (!$this->confirm('The name chosen for the certificate and key already exist, would you like to overwrite the existing certificate and key?')) {
+                return;
+            }
+        }
 
         exec("openssl req -x509 -sha256 -nodes -days {$days} -newkey rsa:2048 -keyout {$storagePath}/{$keyname} -out {$storagePath}/{$certname}");
     }
