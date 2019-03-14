@@ -10,6 +10,7 @@ namespace CodeGreenCreative\SamlIdp;
  * @package Zizaco\Entrust
  */
 
+use CodeGreenCreative\SamlIdp\Commands\CreateCertificate;
 use CodeGreenCreative\SamlIdp\Traits\EventMap;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Routing\Router;
@@ -149,11 +150,11 @@ class SamlidpServiceProvider extends ServiceProvider
      */
     private function registerCommands()
     {
-        // if ($this->app->runningInConsole()) {
-        //     $this->commands([
-        //         FooCommand::class
-        //     ]);
-        // }
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                CreateCertificate::class,
+            ]);
+        }
     }
 
     /**
