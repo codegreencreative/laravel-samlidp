@@ -11,6 +11,7 @@ namespace CodeGreenCreative\SamlIdp;
  */
 
 use CodeGreenCreative\SamlIdp\Commands\CreateCertificate;
+use CodeGreenCreative\SamlIdp\Commands\CreateServiceProvider;
 use CodeGreenCreative\SamlIdp\Traits\EventMap;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Routing\Router;
@@ -153,6 +154,7 @@ class SamlidpServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 CreateCertificate::class,
+                CreateServiceProvider::class,
             ]);
         }
     }
