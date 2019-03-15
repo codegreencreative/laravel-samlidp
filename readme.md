@@ -32,10 +32,10 @@ FileSystem configuration
 ],
 ```
 
-Use the following command to create a self signed certificate for your IdP. 
+Use the following command to create a self signed certificate for your IdP. If you change the certname or keyname to anything other than the default names, you will need to update your `config/samlidp.php` config file to reflect those new file names.
 
 ```shell
-php artisan samlidp:cert --days 7300 --keyname key --certname cert
+php artisan samlidp:cert --days 7300 --keyname key.pem --certname cert.pem
 ```
 
 --days <int>
