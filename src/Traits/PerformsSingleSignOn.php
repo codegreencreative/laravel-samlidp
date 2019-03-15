@@ -29,10 +29,11 @@ trait PerformsSingleSignOn
     }
 
     /**
-     * [send description]
+     * Send a SAML response/request
      *
-     * @param  [type] $binding_type [description]
-     * @return [type]               [description]
+     * @param  string $binding_type
+     * @param  string $as
+     * @return string Target URL
      */
     protected function send($binding_type, $as = 'asResponse')
     {
@@ -51,15 +52,12 @@ trait PerformsSingleSignOn
     }
 
     /**
-     * [getServiceProvider description]
+     * Get service provider from AuthNRequest
      *
-     * @return [type] [description]
+     * @return string
      */
-    protected function getServiceProvider($request)
+    public function getServiceProvider($request)
     {
-        // dd($request->getAssertionConsumerServiceURL());
-        // dd(base64_encode($request->getAssertionConsumerServiceURL()));
-        // dd(base64_encode('http://app.dev.thesixfigurementors.com/auth/acs'));
         return base64_encode($request->getAssertionConsumerServiceURL());
     }
 }
