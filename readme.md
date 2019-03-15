@@ -38,10 +38,12 @@ Use the following command to create a self signed certificate for your IdP. If y
 php artisan samlidp:cert [--days <days> --keyname <name> --certname <name>]
 ```
 
+```shell
 Options:
   --days=<days>      Days to add for the expiration date [default: 7800]
   --keyname=<name>   Name of the certificate key file [default: key.pem]
   --certname=<name>  Name of the certificate file [default: cert.pem]
+```
 
 ## Usage
 
