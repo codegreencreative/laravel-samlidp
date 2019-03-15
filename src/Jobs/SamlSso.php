@@ -111,7 +111,9 @@ class SamlSso implements SamlContract
             );
 
         $attribute_statement = new AttributeStatement;
-        $res = event(new AssertionEvent($attribute_statement));
+        event(new AssertionEvent($attribute_statement));
+        // Add the attributes to the assertion
+        $assertion->addItem($attribute_statement);
 
         return $this->send(SamlConstants::BINDING_SAML2_HTTP_POST);
     }
