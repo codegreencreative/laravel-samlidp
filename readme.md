@@ -105,8 +105,6 @@ To add additional Claim Types, you can subscribe to the Assertion event:
 
 `CodeGreenCreative\SamlIdp\Events\Assertion`
 
-In 
-
 Sample Listener:
 
 ```php
