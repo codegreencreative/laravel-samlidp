@@ -11,7 +11,6 @@ use RobRichards\XMLSecLibs\XMLSecurityKey;
 
 trait PerformsSingleSignOn
 {
-    // private $services;
     private $issuer;
     private $certificate;
     private $private_key;
@@ -21,9 +20,8 @@ trait PerformsSingleSignOn
     /**
      * [__construct description]
      */
-    public function init()
+    protected function init()
     {
-        // $this->services = collect(config('saml.sp'));
         $this->issuer = url(config('samlidp.issuer_uri'));
         $this->certificate = (new X509Certificate)->loadPem(Storage::disk('samlidp')->get('cert.pem'));
         $this->private_key = Storage::disk('samlidp')->get('key.pem');
@@ -36,7 +34,7 @@ trait PerformsSingleSignOn
      * @param  [type] $binding_type [description]
      * @return [type]               [description]
      */
-    public function send($binding_type, $as = 'asResponse')
+    protected function send($binding_type, $as = 'asResponse')
     {
         // The response will be to the sls URL of the SP
         $bindingFactory = new BindingFactory;
@@ -57,7 +55,7 @@ trait PerformsSingleSignOn
      *
      * @return [type] [description]
      */
-    public function getServiceProvider($request)
+    protected function getServiceProvider($request)
     {
         // dd($request->getAssertionConsumerServiceURL());
         // dd(base64_encode($request->getAssertionConsumerServiceURL()));

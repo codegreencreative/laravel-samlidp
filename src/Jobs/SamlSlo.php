@@ -2,18 +2,10 @@
 
 namespace CodeGreenCreative\SamlIdp\Jobs;
 
-use CodeGreenCreative\SamlIdp\Contracts\SamlContract;
-use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
 use Illuminate\Foundation\Bus\Dispatchable;
-use LightSaml\Helper;
-use LightSaml\Model\Assertion\Issuer;
-use LightSaml\Model\Assertion\NameID;
-use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Protocol\LogoutRequest;
 use LightSaml\Model\Protocol\LogoutResponse;
-use LightSaml\Model\Protocol\Status;
-use LightSaml\Model\Protocol\StatusCode;
-use LightSaml\SamlConstants;
+use CodeGreenCreative\SamlIdp\Contracts\SamlContract;
 
 class SamlSlo implements SamlContract
 {
@@ -36,7 +28,7 @@ class SamlSlo implements SamlContract
      * @param  [type] $sp [description]
      * @return [type]     [description]
      */
-    public function handle()
+    protected function handle()
     {
         $this->destination = sprintf('%s?idp=%s', $this->sp['logout'], config('app.url'));
         // We are receiving a Logout Request
@@ -59,7 +51,7 @@ class SamlSlo implements SamlContract
      * [response description]
      * @return [type] [description]
      */
-    public function response()
+    protected function response()
     {
         $this->response = (new LogoutResponse)->setIssuer(new Issuer($this->issuer))
             ->setID(Helper::generateID())

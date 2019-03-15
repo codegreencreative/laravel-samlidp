@@ -2,33 +2,25 @@
 
 namespace CodeGreenCreative\SamlIdp\Jobs;
 
-use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
-use Illuminate\Foundation\Bus\Dispatchable;
-use LightSaml\Binding\BindingFactory;
 use LightSaml\ClaimTypes;
-use LightSaml\Context\Profile\MessageContext;
-use LightSaml\Helper;
+use LightSaml\Binding\BindingFactory;
+use LightSaml\Model\Assertion\Subject;
+use LightSaml\Model\Protocol\Response;
 use LightSaml\Model\Assertion\Assertion;
 use LightSaml\Model\Assertion\Attribute;
+use LightSaml\Model\Assertion\Conditions;
+use LightSaml\Model\Protocol\AuthnRequest;
+use LightSaml\Model\Assertion\AuthnContext;
+use LightSaml\Model\XmlDSig\SignatureWriter;
+use LightSaml\Context\Profile\MessageContext;
+use LightSaml\Model\Assertion\AuthnStatement;
 use LightSaml\Model\Assertion\AttributeStatement;
 use LightSaml\Model\Assertion\AudienceRestriction;
-use LightSaml\Model\Assertion\AuthnContext;
-use LightSaml\Model\Assertion\AuthnStatement;
-use LightSaml\Model\Assertion\Conditions;
-use LightSaml\Model\Assertion\Issuer;
-use LightSaml\Model\Assertion\NameID;
-use LightSaml\Model\Assertion\Subject;
 use LightSaml\Model\Assertion\SubjectConfirmation;
+use CodeGreenCreative\SamlIdp\Contracts\SamlContract;
 use LightSaml\Model\Assertion\SubjectConfirmationData;
-use LightSaml\Model\Context\DeserializationContext;
-use LightSaml\Model\Protocol\AuthnRequest;
-use LightSaml\Model\Protocol\Response;
-use LightSaml\Model\Protocol\Status;
-use LightSaml\Model\Protocol\StatusCode;
-use LightSaml\Model\XmlDSig\SignatureWriter;
-use LightSaml\SamlConstants;
 
-class SamlSso
+class SamlSso implements SamlContract
 {
     use Dispatchable, PerformsSingleSignOn;
 
@@ -47,10 +39,8 @@ class SamlSso
      */
     public function handle()
     {
-        $xml = gzinflate(base64_decode(request('SAMLRequest')));
-
         $deserializationContext = new DeserializationContext;
-        $deserializationContext->getDocument()->loadXML($xml);
+        $deserializationContext->getDocument()->loadXML(gzinflate(base64_decode(request('SAMLRequest'))));
 
         $this->authn_request = new AuthnRequest;
         $this->authn_request->deserialize($deserializationContext->getDocument()->firstChild, $deserializationContext);
@@ -112,18 +102,6 @@ class SamlSso
             ->addItem(
                 (new AttributeStatement)
                     ->addAttribute(new Attribute(ClaimTypes::EMAIL_ADDRESS, auth()->user()->email))
-                // ->addAttribute(new Attribute(ClaimTypes::PPID, auth()->user()->legacy->sfm_id))
-                // ->addAttribute((new Attribute(ClaimTypes::EMAIL_ADDRESS, auth()->user()->email))
-                //     ->setNameFormat('urn:oasis:names:tc:SAML:2.0:attrname-format:basic'))
-                // ->addAttribute((new Attribute('Email', auth()->user()->email))
-                //     ->setNameFormat('urn:oasis:names:tc:SAML:2.0:attrname-format:basic'))
-                // ->addAttribute((new Attribute('primaryEmail', auth()->user()->email))
-                //     ->setNameFormat('urn:oasis:names:tc:SAML:2.0:attrname-format:basic'))
-                // ->addAttribute(new Attribute(ClaimTypes::COMMON_NAME, auth()->user()->name))
-                // ->addAttribute(new Attribute(
-                //     'http://schemas.xmlsoap.org/claims/AccessLevel',
-                //     auth()->user()->access_levels_id
-                // ))
             );
          return $this->send(SamlConstants::BINDING_SAML2_HTTP_POST);
     }
