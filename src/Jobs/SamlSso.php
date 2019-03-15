@@ -2,33 +2,31 @@
 
 namespace CodeGreenCreative\SamlIdp\Jobs;
 
-use LightSaml\Helper;
-use LightSaml\ClaimTypes;
-use LightSaml\SamlConstants;
-use LightSaml\Model\Protocol\Status;
+use CodeGreenCreative\SamlIdp\Contracts\SamlContract;
+use CodeGreenCreative\SamlIdp\Events\Assertion as AssertionEvent;
+use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
+use Illuminate\Foundation\Bus\Dispatchable;
 use LightSaml\Binding\BindingFactory;
+use LightSaml\Context\Profile\MessageContext;
+use LightSaml\Helper;
+use LightSaml\Model\Assertion\Assertion;
+use LightSaml\Model\Assertion\AttributeStatement;
+use LightSaml\Model\Assertion\AudienceRestriction;
+use LightSaml\Model\Assertion\AuthnContext;
+use LightSaml\Model\Assertion\AuthnStatement;
+use LightSaml\Model\Assertion\Conditions;
 use LightSaml\Model\Assertion\Issuer;
 use LightSaml\Model\Assertion\NameID;
 use LightSaml\Model\Assertion\Subject;
-use LightSaml\Model\Protocol\Response;
-use LightSaml\Model\Assertion\Assertion;
-use LightSaml\Model\Assertion\Attribute;
-use LightSaml\Model\Protocol\StatusCode;
-use LightSaml\Model\Assertion\Conditions;
-use LightSaml\Model\Protocol\AuthnRequest;
-use Illuminate\Foundation\Bus\Dispatchable;
-use LightSaml\Model\Assertion\AuthnContext;
-use LightSaml\Model\XmlDSig\SignatureWriter;
-use LightSaml\Context\Profile\MessageContext;
-use LightSaml\Model\Assertion\AuthnStatement;
-use LightSaml\Model\Assertion\AttributeStatement;
-use LightSaml\Model\Assertion\AudienceRestriction;
 use LightSaml\Model\Assertion\SubjectConfirmation;
-use LightSaml\Model\Context\DeserializationContext;
-use CodeGreenCreative\SamlIdp\Contracts\SamlContract;
 use LightSaml\Model\Assertion\SubjectConfirmationData;
-use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
-use CodeGreenCreative\SamlIdp\Events\Assertion as AssertionEvent;
+use LightSaml\Model\Context\DeserializationContext;
+use LightSaml\Model\Protocol\AuthnRequest;
+use LightSaml\Model\Protocol\Response;
+use LightSaml\Model\Protocol\Status;
+use LightSaml\Model\Protocol\StatusCode;
+use LightSaml\Model\XmlDSig\SignatureWriter;
+use LightSaml\SamlConstants;
 
 class SamlSso implements SamlContract
 {
