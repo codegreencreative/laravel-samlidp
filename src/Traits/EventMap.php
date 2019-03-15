@@ -5,7 +5,7 @@ namespace CodeGreenCreative\SamlIdp\Traits;
 trait EventMap
 {
     /**
-     * All of the Horizon event / listener mappings.
+     * All of the Laravel SAML IdP event / listener mappings.
      *
      * @var array
      */

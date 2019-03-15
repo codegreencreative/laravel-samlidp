@@ -3,15 +3,13 @@
 namespace CodeGreenCreative\SamlIdp;
 
 /**
- * This file is part of Entrust,
- * a role & permission management solution for Laravel.
+ * The service provider for laravel-samleidp
  *
  * @license MIT
- * @package Zizaco\Entrust
  */
 
-use CodeGreenCreative\SamlIdp\Commands\CreateCertificate;
-use CodeGreenCreative\SamlIdp\Commands\CreateServiceProvider;
+use CodeGreenCreative\SamlIdp\Console\CreateCertificate;
+use CodeGreenCreative\SamlIdp\Console\CreateServiceProvider;
 use CodeGreenCreative\SamlIdp\Traits\EventMap;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Routing\Router;
@@ -19,7 +17,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
-class SamlidpServiceProvider extends ServiceProvider
+class LaravelSamlIdpServiceProvider extends ServiceProvider
 {
     use EventMap;
 
@@ -50,8 +48,9 @@ class SamlidpServiceProvider extends ServiceProvider
     }
 
     /**
-     * [configure description]
-     * @return [type] [description]
+     * Configure the service provider
+     *
+     * @return void
      */
     private function configure()
     {
@@ -59,8 +58,9 @@ class SamlidpServiceProvider extends ServiceProvider
     }
 
     /**
-     * [offerPublishing description]
-     * @return [type] [description]
+     * Offer publishing for the service provider
+     *
+     * @return void
      */
     public function offerPublishing()
     {
@@ -81,13 +81,13 @@ class SamlidpServiceProvider extends ServiceProvider
     }
 
     /**
-     * [registerBladeComponents description]
-     * @return [type] [description]
+     * Register blade components for service provider
+     *
+     * @return void
      */
     public function registerBladeComponents()
     {
         Blade::directive('samlidp', function ($expression) {
-            \Log::info($_GET['SAMLRequest'] ?? 'Nope');
             if (request()->filled('SAMLRequest')) {
                 return "<?php echo view('samlidp::components.input'); ?>";
             }
@@ -101,14 +101,12 @@ class SamlidpServiceProvider extends ServiceProvider
      */
     private function registerServices()
     {
-        $this->app->singleton('samlidp', function ($app) {
-            return new Samlidp;
-        });
     }
 
     /**
-     * [registerEvents description]
-     * @return [type] [description]
+     * Loop through events and listeners provided by EventMap trait
+     *
+     * @return void
      */
     private function registerEvents()
     {
@@ -121,8 +119,9 @@ class SamlidpServiceProvider extends ServiceProvider
     }
 
     /**
-     * [registerRoutes description]
-     * @return [type] [description]
+     * Register routes for the service provider
+     *
+     * @return void
      */
     private function registerRoutes()
     {
@@ -136,8 +135,9 @@ class SamlidpServiceProvider extends ServiceProvider
     }
 
     /**
-     * [registerResources description]
-     * @return [type] [description]
+     * Register resources for the service provider
+     *
+     * @return void
      */
     private function registerResources()
     {
@@ -157,17 +157,5 @@ class SamlidpServiceProvider extends ServiceProvider
                 CreateServiceProvider::class,
             ]);
         }
-    }
-
-    /**
-     * Get the services provided.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return [
-            'samlidp',
-        ];
     }
 }
