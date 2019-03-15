@@ -40,7 +40,7 @@ class CreateCertificate extends Command
      */
     public function handle()
     {
-        $storagePath = storage_path() . "/samlidp";
+        $storagePath = storage_path('samlidp');
         $days = $this->option('days');
         $keyname = $this->option('keyname');
         $certname = $this->option('certname');
@@ -50,12 +50,12 @@ class CreateCertificate extends Command
             mkdir($storagePath, 0755, true);
         }
 
-        if (file_exists("$storagePath/$keyname") || file_exists("$storagePath/$certname")) {
-            if (!$this->confirm('The name chosen for the certificate and key already exist, would you like to overwrite the existing certificate and key?')) {
-                return;
-            }
+        $key = sprintf('%s/%s', $storagePath, $keyname);
+        $cert = sprintf('%s/%s', $storagePath, $certname);
+        $question = 'The name chosen for the PEM files already exist. Would you like to overwrite existing PEM files?';
+        if ((!file_exists($key) && !file_exists($cert)) || $this->confirm($question)) {
+            $command = 'openssl req -x509 -sha256 -nodes -days %s -newkey rsa:2048 -keyout %s -out %s';
+            exec(sprintf($command, $days, $key, $cert));
         }
-
-        exec("openssl req -x509 -sha256 -nodes -days {$days} -newkey rsa:2048 -keyout {$storagePath}/{$keyname} -out {$storagePath}/{$certname}");
     }
 }
