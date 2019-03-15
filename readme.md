@@ -1,4 +1,4 @@
-# Laravel SAML idP
+# Laravel (5.6+) SAML idP
 
 This package allows you to implement your own Identification Provider (idP) using the SAML 2.0 standard to be used with supporting SAML 2.0 Service Providers (SP).
 
@@ -10,23 +10,17 @@ Require this package with composer:
 composer require codegreencreative/laravel-samlidp
 ```
 
-Laravel 5.6+ should auto discover the package, if not, run
-
-```shell
-php artisan package:discover
-```
-
 Publish config
-config/samlidp.php
 
 ```shell
 php artisan vendor:publish --tag="samlidp_config"
 ```
 
 FileSystem configuration
-Within `config/filesystem.php` following entry needs to be added:
 
 ```php
+// config/filesystem.php
+
 'disks' => [
 
         ...
@@ -38,9 +32,7 @@ Within `config/filesystem.php` following entry needs to be added:
 ],
 ```
 
-# Create a Self Signed Certificate (to be used later)
-
-Use the following command to create new certificate and private key for yoru IdP.
+Use the following command to create a self signed certificate for your IdP. 
 
 ```shell
 php artisan samlidp:cert --days 7300 --keyname key --certname cert
@@ -60,7 +52,7 @@ php artisan samlidp:cert --days 7300 --keyname key --certname cert
 
 ## Usage
 
-Within your login view, problably `resources/views/auth/login.blade.php` add the SAMLRequest directive beneath the CSRF directive:
+Within your login view, probably `resources/views/auth/login.blade.php` add the SAMLRequest directive beneath the CSRF directive:
 
 ```php
 @csrf
