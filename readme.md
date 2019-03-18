@@ -108,7 +108,6 @@ To add additional Claim Types, you can subscribe to the Assertion event:
 Sample Listener:
 
 ```php
-
 <?php
 
 namespace App\Listeners;
