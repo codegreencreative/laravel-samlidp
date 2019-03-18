@@ -18,6 +18,10 @@ return [
     'login_uri' => 'login',
     // The URI to the saml metadata file, this describes your idP
     'issuer_uri' => 'saml/metadata',
+    // Name of the certificate PEM file
+    'certname' => 'cert.pem',
+    // Name of the certificate key PEM file
+    'keyname' => 'key.pem',
     // list of all service providers
     'sp' => [
         // Base64 encoded ACS URL
