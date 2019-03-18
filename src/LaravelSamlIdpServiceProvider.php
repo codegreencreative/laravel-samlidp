@@ -3,22 +3,21 @@
 namespace CodeGreenCreative\SamlIdp;
 
 /**
- * This file is part of Entrust,
- * a role & permission management solution for Laravel.
+ * The service provider for laravel-samleidp
  *
  * @license MIT
- * @package Zizaco\Entrust
  */
 
+use CodeGreenCreative\SamlIdp\Console\CreateCertificate;
+use CodeGreenCreative\SamlIdp\Console\CreateServiceProvider;
 use CodeGreenCreative\SamlIdp\Traits\EventMap;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
-class SamlidpServiceProvider extends ServiceProvider
+class LaravelSamlIdpServiceProvider extends ServiceProvider
 {
     use EventMap;
 
@@ -49,46 +48,48 @@ class SamlidpServiceProvider extends ServiceProvider
     }
 
     /**
-     * [configure description]
-     * @return [type] [description]
+     * Configure the service provider
+     *
+     * @return void
      */
     private function configure()
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/samlidp.php', 'samlidp');
+        $this->mergeConfigFrom(__DIR__ . '/../config/samlidp.php', 'samlidp');
     }
 
     /**
-     * [offerPublishing description]
-     * @return [type] [description]
+     * Offer publishing for the service provider
+     *
+     * @return void
      */
     public function offerPublishing()
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../resources/views' => resource_path('views/vendor/samlidp'),
+                __DIR__ . '/../resources/views' => resource_path('views/vendor/samlidp'),
             ], 'samlidp_views');
 
             $this->publishes([
-                __DIR__.'/../config/samlidp.php' => config_path('samlidp.php'),
+                __DIR__ . '/../config/samlidp.php' => config_path('samlidp.php'),
             ], 'samlidp_config');
 
             // Create storage/samlidp directory
-            if (! file_exists(storage_path() . "/samlidp")) {
+            if (!file_exists(storage_path() . "/samlidp")) {
                 mkdir(storage_path() . "/samlidp", 0755, true);
             }
         }
     }
 
     /**
-     * [registerBladeComponents description]
-     * @return [type] [description]
+     * Register blade components for service provider
+     *
+     * @return void
      */
     public function registerBladeComponents()
     {
         Blade::directive('samlidp', function ($expression) {
-            \Log::info($_GET['SAMLRequest'] ?? 'Nope');
             if (request()->filled('SAMLRequest')) {
-                return view('samlidp::components.input');
+                return "<?php echo view('samlidp::components.input'); ?>";
             }
         });
     }
@@ -100,14 +101,12 @@ class SamlidpServiceProvider extends ServiceProvider
      */
     private function registerServices()
     {
-        $this->app->singleton('samlidp', function ($app) {
-            return new Samlidp;
-        });
     }
 
     /**
-     * [registerEvents description]
-     * @return [type] [description]
+     * Loop through events and listeners provided by EventMap trait
+     *
+     * @return void
      */
     private function registerEvents()
     {
@@ -120,8 +119,9 @@ class SamlidpServiceProvider extends ServiceProvider
     }
 
     /**
-     * [registerRoutes description]
-     * @return [type] [description]
+     * Register routes for the service provider
+     *
+     * @return void
      */
     private function registerRoutes()
     {
@@ -130,17 +130,18 @@ class SamlidpServiceProvider extends ServiceProvider
             'namespace' => 'CodeGreenCreative\SamlIdp\Http\Controllers',
             'middleware' => 'web',
         ], function () {
-            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+            $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
         });
     }
 
     /**
-     * [registerResources description]
-     * @return [type] [description]
+     * Register resources for the service provider
+     *
+     * @return void
      */
     private function registerResources()
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'samlidp');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'samlidp');
     }
 
     /**
@@ -150,22 +151,11 @@ class SamlidpServiceProvider extends ServiceProvider
      */
     private function registerCommands()
     {
-        // if ($this->app->runningInConsole()) {
-        //     $this->commands([
-        //         FooCommand::class
-        //     ]);
-        // }
-    }
-
-    /**
-     * Get the services provided.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return [
-            'samlidp'
-        ];
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                CreateCertificate::class,
+                CreateServiceProvider::class,
+            ]);
+        }
     }
 }

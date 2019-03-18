@@ -1,4 +1,4 @@
-# Laravel SAML idP
+# Laravel (5.6+) SAML idP
 
 This package allows you to implement your own Identification Provider (idP) using the SAML 2.0 standard to be used with supporting SAML 2.0 Service Providers (SP).
 
@@ -10,23 +10,17 @@ Require this package with composer:
 composer require codegreencreative/laravel-samlidp
 ```
 
-Laravel 5.6+ should auto discover the package, if not, run
-
-```shell
-php artisan package:discover
-```
-
 Publish config
-config/samlidp.php
 
 ```shell
 php artisan vendor:publish --tag="samlidp_config"
 ```
 
 FileSystem configuration
-Within `config/filesystem.php` following entry needs to be added:
 
 ```php
+// config/filesystem.php
+
 'disks' => [
 
         ...
@@ -38,29 +32,22 @@ Within `config/filesystem.php` following entry needs to be added:
 ],
 ```
 
-# Create a Self Signed Certificate (to be used later)
-
-Use the following command to create new certificate and private key for yoru IdP.
+Use the following command to create a self signed certificate for your IdP. If you change the certname or keyname to anything other than the default names, you will need to update your `config/samlidp.php` config file to reflect those new file names.
 
 ```shell
-php artisan samlidp:cert --days 7300 --keyname key --certname cert
+php artisan samlidp:cert [--days <days> --keyname <name> --certname <name>]
 ```
 
---days <int>
->Number of days to add from today as the expiration date
->Default: 7300
-
---keyname <string>
->Prefix name to the key file
->Default: key.pem
-
---certname <string>
->Prefix name to the certificate file
->Default: cert.pem
+```shell
+Options:
+  --days=<days>      Days to add for the expiration date [default: 7800]
+  --keyname=<name>   Name of the certificate key file [default: key.pem]
+  --certname=<name>  Name of the certificate file [default: cert.pem]
+```
 
 ## Usage
 
-Within your login view, problably `resources/views/auth/login.blade.php` add the SAMLRequest directive beneath the CSRF directive:
+Within your login view, probably `resources/views/auth/login.blade.php` add the SAMLRequest directive beneath the CSRF directive:
 
 ```php
 @csrf
@@ -73,12 +60,15 @@ The SAMLRequest directive will fill out the hidden input automatically when a SA
 
 After you publish the config file, you will need to set up your Service Providers. The key for the Service Provider is a base 64 encoded Consumer Service (ACS) URL. You can get this information from your Service Provider, but you will need to base 64 encode the URL and place it in your config. This is due to config dot notation.
 
-For our example.com SP, an example SAML URL may look like this: https://example.com/saml/acs Base 64 encode this URL and place it in your config file.
+You may use this command to help generate a new SAML Service Provider:
 
-Sample `config/samlidp.php` file
+```shell
+php artisan samlidp:sp
+```
+
+Example SP in `config/samlidp.php` file:
 
 ```php
-
 <?php
 
 return [
@@ -98,4 +88,43 @@ return [
     ]
 
 ];
+```
+
+## Attributes (optional)
+
+Service providers may require more additional attributes to be sent via assertion. Its even possible that they require the same information but as a different Claim Type.
+
+By Default this package will send the following Claim Types:
+
+`ClaimTypes::EMAIL_ADDRESS` as `auth()->user()->email`
+`ClaimTypes::GIVEN_NAME` as `auth()->user()->name`
+
+This is because Laravel migrations, by default, only supply email and name fields that are usable by SAML 2.0.
+
+To add additional Claim Types, you can subscribe to the Assertion event:
+
+`CodeGreenCreative\SamlIdp\Events\Assertion`
+
+Sample Listener:
+
+```php
+
+<?php
+
+namespace App\Listeners;
+
+use LightSaml\ClaimTypes;
+use LightSaml\Model\Assertion\Attribute;
+use CodeGreenCreative\SamlIdp\Events\Assertion;
+
+class SamlAssertionAttributes
+{
+    public function handle(Assertion $event)
+    {
+        $event->attribute_statement
+            ->addAttribute(new Attribute(ClaimTypes::PPID, auth()->user()->id))
+            ->addAttribute(new Attribute(ClaimTypes::NAME, auth()->user()->name));
+    }
+}
+
 ```

@@ -2,20 +2,16 @@
 
 namespace CodeGreenCreative\SamlIdp\Jobs;
 
-use CodeGreenCreative\SamlIdp\Contracts\SamlContract;
 use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
 use Illuminate\Foundation\Bus\Dispatchable;
 use LightSaml\Helper;
 use LightSaml\Model\Assertion\Issuer;
 use LightSaml\Model\Assertion\NameID;
-use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Protocol\LogoutRequest;
 use LightSaml\Model\Protocol\LogoutResponse;
-use LightSaml\Model\Protocol\Status;
-use LightSaml\Model\Protocol\StatusCode;
 use LightSaml\SamlConstants;
 
-class SamlSlo implements SamlContract
+class SamlSlo
 {
     use Dispatchable, PerformsSingleSignOn;
 
