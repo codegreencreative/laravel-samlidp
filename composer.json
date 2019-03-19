@@ -13,12 +13,17 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.1-dev"
+            "dev-master": "1.0-dev"
         },
         "laravel": {
             "providers": [
                 "CodeGreenCreative\\SamlIdp\\LaravelSamlIdpServiceProvider"
             ]
         }
-    }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
