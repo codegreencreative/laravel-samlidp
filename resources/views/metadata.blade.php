@@ -4,14 +4,14 @@
     <md:KeyDescriptor use="signing">
       <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
         <ds:X509Data>
-          <ds:X509Certificate>{{ Storage::disk('samlidp')->get('cert.pem') }}</ds:X509Certificate>
+          <ds:X509Certificate>{{ $cert }}</ds:X509Certificate>
         </ds:X509Data>
       </ds:KeyInfo>
     </md:KeyDescriptor>
     <md:KeyDescriptor use="encryption">
       <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
         <ds:X509Data>
-          <ds:X509Certificate>{{ Storage::disk('samlidp')->get('cert.pem') }}</ds:X509Certificate>
+          <ds:X509Certificate>{{ $cert }}</ds:X509Certificate>
         </ds:X509Data>
       </ds:KeyInfo>
     </md:KeyDescriptor>

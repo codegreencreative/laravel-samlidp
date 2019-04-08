@@ -19,8 +19,12 @@ class MetadataController extends Controller
             \Barryvdh\Debugbar\Facade::disable();
         }
 
-        return response(view('samlidp::metadata'), 200, [
-            'Content-Type' => 'application/xml'
+        $cert = Storage::disk('samlidp')->get('cert.pem');
+        $cert = preg_replace('/^\W+\w+\s+\w+\W+\s(.*)\s+\W+.*$/s', '$1', $cert);
+        $cert = str_replace(PHP_EOL, "", $cert);
+
+        return response(view('samlidp::metadata', compact('cert')), 200, [
+            'Content-Type' => 'application/xml',
         ]);
     }
 }
