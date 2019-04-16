@@ -125,13 +125,12 @@ class LaravelSamlIdpServiceProvider extends ServiceProvider
      */
     private function registerRoutes()
     {
-        Route::group([
-            'prefix' => 'saml',
-            'namespace' => 'CodeGreenCreative\SamlIdp\Http\Controllers',
-            'middleware' => 'web',
-        ], function () {
-            $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
-        });
+        Route::name('saml.')
+            ->prefix('saml')
+            ->namespace('CodeGreenCreative\SamlIdp\Http\Controllers')
+            ->middleware('web')->group(function () {
+                $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+            });
     }
 
     /**
