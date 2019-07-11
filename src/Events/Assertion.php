@@ -27,7 +27,8 @@ class Assertion
      */
     public function __construct(\LightSaml\Model\Assertion\AttributeStatement &$attribute_statement)
     {
-        $this->attribute_statement = $attribute_statement
+        $this->attribute_statement = &$attribute_statement;
+        $this->attribute_statement
             ->addAttribute(new Attribute(ClaimTypes::EMAIL_ADDRESS, auth()->user()->email))
             ->addAttribute(new Attribute(ClaimTypes::COMMON_NAME, auth()->user()->name));
     }
