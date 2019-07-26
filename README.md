@@ -108,6 +108,21 @@ To add additional Claim Types, you can subscribe to the Assertion event:
 
 `CodeGreenCreative\SamlIdp\Events\Assertion`
 
+Subscribing to the Event:
+
+In your `App\Providers\EventServiceProvider` class, add to the already existing `$listen` property...
+
+```php
+protected $listen = [
+    'App\Events\Event' => [
+        'App\Listeners\EventListener',
+    ],
+    'CodeGreenCreative\SamlIdp\Events\Assertion' => [
+        'App\Listeners\SamlAssertionAttributes'
+    ]
+];
+```
+
 Sample Listener:
 
 ```php
