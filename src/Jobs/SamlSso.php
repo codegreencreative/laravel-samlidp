@@ -53,10 +53,15 @@ class SamlSso implements SamlContract
         $this->authn_request = new AuthnRequest;
         $this->authn_request->deserialize($deserializationContext->getDocument()->firstChild, $deserializationContext);
 
-        $this->destination = config(sprintf(
+        $destination = config(sprintf(
             'samlidp.sp.%s.destination',
             $this->getServiceProvider($this->authn_request)
-        )) . '?idp=' . config('app.url');
+        ));
+        $parsedUrl = parse_url($destination);
+        parse_str($parsedUrl['query'], $parsedQueryParams);
+        $parsedQueryParams['idp'] = config('app.url');
+
+        $this->destination = strtok($destination, '?') . '?' . http_build_query($parsedQueryParams);
 
         return $this->response();
     }
