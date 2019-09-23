@@ -7,8 +7,11 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use LightSaml\Helper;
 use LightSaml\Model\Assertion\Issuer;
 use LightSaml\Model\Assertion\NameID;
+use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Protocol\LogoutRequest;
 use LightSaml\Model\Protocol\LogoutResponse;
+use LightSaml\Model\Protocol\Status;
+use LightSaml\Model\Protocol\StatusCode;
 use LightSaml\SamlConstants;
 
 class SamlSlo
@@ -34,7 +37,7 @@ class SamlSlo
      */
     public function handle()
     {
-        $this->destination = sprintf('%s?idp=%s', $this->sp['logout'], config('app.url'));
+        $this->setDestination();
         // We are receiving a Logout Request
         if (request()->filled('SAMLRequest')) {
             $xml = gzinflate(base64_decode(request('SAMLRequest')));
@@ -81,5 +84,15 @@ class SamlSlo
             ->setDestination($this->destination);
 
         return $this->send(SamlConstants::BINDING_SAML2_HTTP_REDIRECT);
+    }
+
+    private function setDestination()
+    {
+        $destination = $this->sp['logout'];
+        $parsedUrl = parse_url($destination);
+        parse_str($parsedUrl['query'] ?? '', $parsedQueryParams);
+        $parsedQueryParams['idp'] = config('app.url');
+
+        $this->destination = strtok($destination, '?') . '?' . http_build_query($parsedQueryParams);
     }
 }
