@@ -58,7 +58,7 @@ class SamlSso implements SamlContract
             $this->getServiceProvider($this->authn_request)
         ));
         $parsedUrl = parse_url($destination);
-        parse_str($parsedUrl['query'], $parsedQueryParams);
+        parse_str($parsedUrl['query'] ?? '', $parsedQueryParams);
         $parsedQueryParams['idp'] = config('app.url');
 
         $this->destination = strtok($destination, '?') . '?' . http_build_query($parsedQueryParams);
