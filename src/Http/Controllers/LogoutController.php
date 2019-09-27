@@ -24,7 +24,14 @@ class LogoutController extends Controller
                 return redirect(SamlSlo::dispatchNow($sp));
             }
         }
+
         $request->session()->forget('saml.slo');
+
+        if (config('samlidp.logout_after_slo')) {
+            $request->session()->flush();
+            $request->session()->regenerate();
+        }
+
         return redirect(config('samlidp.login_uri'));
     }
 }

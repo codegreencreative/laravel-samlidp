@@ -9,13 +9,14 @@ return [
     |
     | Use this file to configure the service providers you want to use.
     |
-    */
+     */
     // Outputs data to your laravel.log file for debugging
     'debug' => false,
     // Define the email address field name in the users table
     'email_field' => 'email',
     // The URI to your login page
     'login_uri' => 'login',
+    'logout_after_slo' => env('LOGOUT_AFTER_SLO', false),
     // The URI to the saml metadata file, this describes your idP
     'issuer_uri' => 'saml/metadata',
     // Name of the certificate PEM file
