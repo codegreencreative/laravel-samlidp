@@ -1,3 +1,6 @@
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/codegreencreative/laravel-samlidp.svg?style=flat-square)](https://packagist.org/packages/codegreencreative/laravel-samlidp)
+[![Total Downloads](https://img.shields.io/packagist/dt/codegreencreative/laravel-samlidp.svg?style=flat-square)](https://packagist.org/packages/codegreencreative/laravel-samlidp)
+
 # Laravel (5.6+) SAML idP
 
 This package allows you to implement your own Identification Provider (idP) using the SAML 2.0 standard to be used with supporting SAML 2.0 Service Providers (SP).
@@ -104,6 +107,21 @@ This is because Laravel migrations, by default, only supply email and name field
 To add additional Claim Types, you can subscribe to the Assertion event:
 
 `CodeGreenCreative\SamlIdp\Events\Assertion`
+
+Subscribing to the Event:
+
+In your `App\Providers\EventServiceProvider` class, add to the already existing `$listen` property...
+
+```php
+protected $listen = [
+    'App\Events\Event' => [
+        'App\Listeners\EventListener',
+    ],
+    'CodeGreenCreative\SamlIdp\Events\Assertion' => [
+        'App\Listeners\SamlAssertionAttributes'
+    ]
+];
+```
 
 Sample Listener:
 
