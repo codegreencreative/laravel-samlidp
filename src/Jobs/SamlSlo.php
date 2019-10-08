@@ -5,6 +5,7 @@ namespace CodeGreenCreative\SamlIdp\Jobs;
 use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
 use Illuminate\Foundation\Bus\Dispatchable;
 use LightSaml\Helper;
+use LightSaml\SamlConstants;
 use LightSaml\Model\Assertion\Issuer;
 use LightSaml\Model\Assertion\NameID;
 use LightSaml\Model\Context\DeserializationContext;
