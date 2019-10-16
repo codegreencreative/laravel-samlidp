@@ -5,6 +5,7 @@ namespace CodeGreenCreative\SamlIdp\Http\Controllers;
 use App\Http\Controllers\Controller;
 use CodeGreenCreative\SamlIdp\Jobs\SamlSlo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class LogoutController extends Controller
 {
@@ -14,6 +15,12 @@ class LogoutController extends Controller
      */
     public function index(Request $request)
     {
+        $sloRedirect = $request->session()->get('saml.sloRedirect');
+        if (!$sloRedirect) {
+            $this->setSloRedirect($request);
+            $sloRedirect = $request->session()->get('saml.sloRedirect');
+        }
+
         // Need to broadcast to our other SAML apps to log out!
         // Loop through our service providers and "touch" the logout URL's
         foreach (config('samlidp.sp') as $key => $sp) {
@@ -26,12 +33,28 @@ class LogoutController extends Controller
         }
 
         $request->session()->forget('saml.slo');
+        $request->session()->forget('saml.sloRedirect');
 
         if (config('samlidp.logout_after_slo')) {
             $request->session()->flush();
             $request->session()->regenerate();
         }
 
-        return redirect(config('samlidp.login_uri'));
+        return redirect($sloRedirect);
+    }
+
+    private function setSloRedirect(Request $request)
+    {
+        $httpReferer = $request->server('HTTP_REFERER');
+        $redirects = config('samlidp.spSloRedirects', []);
+        $sloRedirect = config('samlidp.login_uri');
+        foreach ($redirects as $referer => $redirectPath) {
+            if (Str::startsWith($httpReferer, $referer)) {
+                $sloRedirect = $redirectPath;
+                break;
+            }
+        }
+
+        $request->session()->put('saml.sloRedirect', $sloRedirect);
     }
 }

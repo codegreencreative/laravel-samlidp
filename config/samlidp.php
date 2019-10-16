@@ -30,5 +30,11 @@ return [
         //     // Your destination is the ACS URL of the Service Provider
         //     'destination' => 'https://myfacebookworkplace.facebook.com/work/saml.php'
         // ]
+    ],
+
+    // If you need to redirect after SLO depending on SLO initiator
+    // key is beginning of HTTP_REFERER value from SERVER, value is redirect path
+    'spSloRedirects' => [
+        // 'https://example.com' => 'https://example.com',
     ]
 ];
