@@ -2,18 +2,17 @@
 
 namespace CodeGreenCreative\SamlIdp\Jobs;
 
-use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
-use Illuminate\Foundation\Bus\Dispatchable;
 use LightSaml\Helper;
 use LightSaml\SamlConstants;
+use LightSaml\Model\Protocol\Status;
 use LightSaml\Model\Assertion\Issuer;
 use LightSaml\Model\Assertion\NameID;
-use LightSaml\Model\Context\DeserializationContext;
+use LightSaml\Model\Protocol\StatusCode;
+use Illuminate\Foundation\Bus\Dispatchable;
 use LightSaml\Model\Protocol\LogoutRequest;
 use LightSaml\Model\Protocol\LogoutResponse;
-use LightSaml\Model\Protocol\Status;
-use LightSaml\Model\Protocol\StatusCode;
-use LightSaml\SamlConstants;
+use LightSaml\Model\Context\DeserializationContext;
+use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
 
 class SamlSlo
 {
@@ -90,10 +89,10 @@ class SamlSlo
     private function setDestination()
     {
         $destination = $this->sp['logout'];
-        $parsedUrl = parse_url($destination);
-        parse_str($parsedUrl['query'] ?? '', $parsedQueryParams);
-        $parsedQueryParams['idp'] = config('app.url');
+        $parsed_url = parse_url($destination);
+        parse_str($parsed_url['query'] ?? '', $parsed_query_params);
+        $parsed_query_params['idp'] = config('app.url');
 
-        $this->destination = strtok($destination, '?') . '?' . http_build_query($parsedQueryParams);
+        $this->destination = strtok($destination, '?') . '?' . http_build_query($parsed_query_params);
     }
 }
