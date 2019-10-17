@@ -15,10 +15,10 @@ class LogoutController extends Controller
      */
     public function index(Request $request)
     {
-        $sloRedirect = $request->session()->get('saml.sloRedirect');
-        if (!$sloRedirect) {
+        $slo_redirect = $request->session()->get('saml.slo_redirect');
+        if (!$slo_redirect) {
             $this->setSloRedirect($request);
-            $sloRedirect = $request->session()->get('saml.sloRedirect');
+            $slo_redirect = $request->session()->get('saml.slo_redirect');
         }
 
         // Need to broadcast to our other SAML apps to log out!
@@ -33,28 +33,28 @@ class LogoutController extends Controller
         }
 
         $request->session()->forget('saml.slo');
-        $request->session()->forget('saml.sloRedirect');
+        $request->session()->forget('saml.slo_redirect');
 
         if (config('samlidp.logout_after_slo')) {
             $request->session()->flush();
             $request->session()->regenerate();
         }
 
-        return redirect($sloRedirect);
+        return redirect($slo_redirect);
     }
 
     private function setSloRedirect(Request $request)
     {
-        $httpReferer = $request->server('HTTP_REFERER');
-        $redirects = config('samlidp.spSloRedirects', []);
-        $sloRedirect = config('samlidp.login_uri');
+        $http_referer = $request->server('HTTP_REFERER');
+        $redirects = config('samlidp.sp_slo_redirects', []);
+        $slo_redirect = config('samlidp.login_uri');
         foreach ($redirects as $referer => $redirectPath) {
-            if (Str::startsWith($httpReferer, $referer)) {
-                $sloRedirect = $redirectPath;
+            if (Str::startsWith($http_referer, $referer)) {
+                $slo_redirect = $redirectPath;
                 break;
             }
         }
 
-        $request->session()->put('saml.sloRedirect', $sloRedirect);
+        $request->session()->put('saml.slo_redirect', $slo_redirect);
     }
 }
