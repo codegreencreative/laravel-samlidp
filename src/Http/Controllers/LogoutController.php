@@ -32,20 +32,20 @@ class LogoutController extends Controller
             }
         }
 
+        if (config('samlidp.logout_after_slo')) {
+            auth()->logout();
+        }
+
         $request->session()->forget('saml.slo');
         $request->session()->forget('saml.slo_redirect');
-
-        if (config('samlidp.logout_after_slo')) {
-            $request->session()->flush();
-            $request->session()->regenerate();
-        }
 
         return redirect($slo_redirect);
     }
 
     private function setSloRedirect(Request $request)
     {
-        $http_referer = $request->server('HTTP_REFERER');
+        // Look for return_to query in case of not relying on HTTP_REFERER
+        $http_referer = $request->has('return_to') ? $request->get('return_to') : $request->server('HTTP_REFERER');
         $redirects = config('samlidp.sp_slo_redirects', []);
         $slo_redirect = config('samlidp.login_uri');
         foreach ($redirects as $referer => $redirectPath) {
