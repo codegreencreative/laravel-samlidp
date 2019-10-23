@@ -2,31 +2,31 @@
 
 namespace CodeGreenCreative\SamlIdp\Jobs;
 
-use CodeGreenCreative\SamlIdp\Contracts\SamlContract;
-use CodeGreenCreative\SamlIdp\Events\Assertion as AssertionEvent;
-use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
-use Illuminate\Foundation\Bus\Dispatchable;
-use LightSaml\Binding\BindingFactory;
-use LightSaml\Context\Profile\MessageContext;
 use LightSaml\Helper;
-use LightSaml\Model\Assertion\Assertion;
-use LightSaml\Model\Assertion\AttributeStatement;
-use LightSaml\Model\Assertion\AudienceRestriction;
-use LightSaml\Model\Assertion\AuthnContext;
-use LightSaml\Model\Assertion\AuthnStatement;
-use LightSaml\Model\Assertion\Conditions;
+use LightSaml\SamlConstants;
+use LightSaml\Model\Protocol\Status;
+use LightSaml\Binding\BindingFactory;
 use LightSaml\Model\Assertion\Issuer;
 use LightSaml\Model\Assertion\NameID;
 use LightSaml\Model\Assertion\Subject;
-use LightSaml\Model\Assertion\SubjectConfirmation;
-use LightSaml\Model\Assertion\SubjectConfirmationData;
-use LightSaml\Model\Context\DeserializationContext;
-use LightSaml\Model\Protocol\AuthnRequest;
 use LightSaml\Model\Protocol\Response;
-use LightSaml\Model\Protocol\Status;
 use LightSaml\Model\Protocol\StatusCode;
+use LightSaml\Model\Assertion\Assertion;
+use LightSaml\Model\Assertion\Conditions;
+use LightSaml\Model\Protocol\AuthnRequest;
+use LightSaml\Model\Assertion\AuthnContext;
+use Illuminate\Foundation\Bus\Dispatchable;
 use LightSaml\Model\XmlDSig\SignatureWriter;
-use LightSaml\SamlConstants;
+use LightSaml\Context\Profile\MessageContext;
+use LightSaml\Model\Assertion\AuthnStatement;
+use LightSaml\Model\Assertion\AttributeStatement;
+use LightSaml\Model\Assertion\AudienceRestriction;
+use LightSaml\Model\Assertion\SubjectConfirmation;
+use LightSaml\Model\Context\DeserializationContext;
+use CodeGreenCreative\SamlIdp\Contracts\SamlContract;
+use LightSaml\Model\Assertion\SubjectConfirmationData;
+use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
+use CodeGreenCreative\SamlIdp\Events\Assertion as AssertionEvent;
 
 class SamlSso implements SamlContract
 {
@@ -53,10 +53,7 @@ class SamlSso implements SamlContract
         $this->authn_request = new AuthnRequest;
         $this->authn_request->deserialize($deserializationContext->getDocument()->firstChild, $deserializationContext);
 
-        $this->destination = config(sprintf(
-            'samlidp.sp.%s.destination',
-            $this->getServiceProvider($this->authn_request)
-        )) . '?idp=' . config('app.url');
+        $this->setDestination();
 
         return $this->response();
     }
@@ -134,5 +131,18 @@ class SamlSso implements SamlContract
         $httpResponse = $postBinding->send($messageContext);
 
         return $httpResponse->getContent();
+    }
+
+    private function setDestination()
+    {
+        $destination = config(sprintf(
+            'samlidp.sp.%s.destination',
+            $this->getServiceProvider($this->authn_request)
+        ));
+        $parsed_url = parse_url($destination);
+        parse_str($parsed_url['query'] ?? '', $parsed_query_params);
+        $parsed_query_params['idp'] = config('app.url');
+
+        $this->destination = strtok($destination, '?') . '?' . http_build_query($parsed_query_params);
     }
 }
