@@ -16,6 +16,7 @@ return [
     'email_field' => 'email',
     // The URI to your login page
     'login_uri' => 'login',
+    // Log out of the IdP after SLO
     'logout_after_slo' => env('LOGOUT_AFTER_SLO', false),
     // The URI to the saml metadata file, this describes your idP
     'issuer_uri' => 'saml/metadata',
