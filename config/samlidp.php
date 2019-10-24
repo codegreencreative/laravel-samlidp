@@ -16,6 +16,7 @@ return [
     'email_field' => 'email',
     // The URI to your login page
     'login_uri' => 'login',
+    // Log out of the IdP after SLO
     'logout_after_slo' => env('LOGOUT_AFTER_SLO', false),
     // The URI to the saml metadata file, this describes your idP
     'issuer_uri' => 'saml/metadata',
@@ -30,5 +31,11 @@ return [
         //     // Your destination is the ACS URL of the Service Provider
         //     'destination' => 'https://myfacebookworkplace.facebook.com/work/saml.php'
         // ]
+    ],
+
+    // If you need to redirect after SLO depending on SLO initiator
+    // key is beginning of HTTP_REFERER value from SERVER, value is redirect path
+    'sp_slo_redirects' => [
+        // 'https://example.com' => 'https://example.com',
     ]
 ];

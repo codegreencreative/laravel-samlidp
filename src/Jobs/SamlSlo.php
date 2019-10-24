@@ -4,8 +4,10 @@ namespace CodeGreenCreative\SamlIdp\Jobs;
 
 use LightSaml\Helper;
 use LightSaml\SamlConstants;
+use LightSaml\Model\Protocol\Status;
 use LightSaml\Model\Assertion\Issuer;
 use LightSaml\Model\Assertion\NameID;
+use LightSaml\Model\Protocol\StatusCode;
 use Illuminate\Foundation\Bus\Dispatchable;
 use LightSaml\Model\Protocol\LogoutRequest;
 use LightSaml\Model\Protocol\LogoutResponse;
@@ -35,7 +37,7 @@ class SamlSlo
      */
     public function handle()
     {
-        $this->destination = sprintf('%s?idp=%s', $this->sp['logout'], config('app.url'));
+        $this->setDestination();
         // We are receiving a Logout Request
         if (request()->filled('SAMLRequest')) {
             $xml = gzinflate(base64_decode(request('SAMLRequest')));
@@ -82,5 +84,15 @@ class SamlSlo
             ->setDestination($this->destination);
 
         return $this->send(SamlConstants::BINDING_SAML2_HTTP_REDIRECT);
+    }
+
+    private function setDestination()
+    {
+        $destination = $this->sp['logout'];
+        $parsed_url = parse_url($destination);
+        parse_str($parsed_url['query'] ?? '', $parsed_query_params);
+        $parsed_query_params['idp'] = config('app.url');
+
+        $this->destination = strtok($destination, '?') . '?' . http_build_query($parsed_query_params);
     }
 }

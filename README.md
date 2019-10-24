@@ -93,6 +93,41 @@ return [
 ];
 ```
 
+## Log out of IdP after SLO
+
+If you wish to log out of the IdP after SLO has completed, set `LOGOUT_AFTER_SLO` to `true` in your `.env` perform the logout action on the Idp.
+
+```
+// .env
+
+LOGOUT_AFTER_SLO=true
+```
+
+## Redirect to SLO initiator after logout
+
+If you wish to return the user back to the SP by which SLO was initiated, you may provide an additional query parameter to the `/saml/logout` route, for example:
+
+```
+https://idp.com/saml/logout?redirect_to=mysp.com
+```
+
+After all SP's have been logged out of, the user will be redirected to `mysp.com`. For this to work properly you need to add the `sp_slo_redirects` option to your `config/samlidp.php` config file, for example:
+
+```php
+<?php
+
+// config/samlidp.php
+
+return [
+    // If you need to redirect after SLO depending on SLO initiator
+    // key is beginning of HTTP_REFERER value from SERVER, value is redirect path
+    'sp_slo_redirects' => [
+        'mysp.com' => 'https://mysp.com',
+    ],
+
+];
+```
+
 ## Attributes (optional)
 
 Service providers may require more additional attributes to be sent via assertion. Its even possible that they require the same information but as a different Claim Type.
