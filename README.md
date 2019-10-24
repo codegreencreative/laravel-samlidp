@@ -88,14 +88,19 @@ return [
             // Simple Logout URL of the Service Provider
             'logout' => 'https://example.com/saml/sls',
         ]
-    ],
-    // If you need to redirect after SLO depending on SLO initiator
-    // key is beginning of HTTP_REFERER value from SERVER, value is redirect path
-    'sp_slo_redirects' => [
-        // 'https://example.com' => 'https://example.com',
     ]
 
 ];
+```
+
+## Log out of IdP after SLO
+
+If you wish to log out of the IdP after SLO has completed, set `LOGOUT_AFTER_SLO` to `true` in your `.env` perform the logout action on the Idp.
+
+```
+// .env
+
+LOGOUT_AFTER_SLO=true
 ```
 
 ## Redirect to SLO initiator after logout
@@ -111,12 +116,14 @@ After all SP's have been logged out of, the user will be redirected to `mysp.com
 ```php
 <?php
 
+// config/samlidp.php
+
 return [
     // If you need to redirect after SLO depending on SLO initiator
     // key is beginning of HTTP_REFERER value from SERVER, value is redirect path
     'sp_slo_redirects' => [
         'mysp.com' => 'https://mysp.com',
-    ]
+    ],
 
 ];
 ```
