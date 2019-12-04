@@ -6,7 +6,7 @@
     "require": {
         "php": "^7.2",
         "illuminate/support": "^5.6||^6.0",
-        "illuminate/routing": "^5.6||6.0",
+        "illuminate/routing": "^5.6||^6.0",
         "lightsaml/lightsaml": "^1.4"
     },
     "autoload": {
