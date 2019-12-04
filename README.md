@@ -1,7 +1,22 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/codegreencreative/laravel-samlidp.svg?style=flat-square)](https://packagist.org/packages/codegreencreative/laravel-samlidp)
 [![Total Downloads](https://img.shields.io/packagist/dt/codegreencreative/laravel-samlidp.svg?style=flat-square)](https://packagist.org/packages/codegreencreative/laravel-samlidp)
 
-# Laravel (5.6+) SAML idP
+# Laravel (6+) SAML IdP
+
+## Whats changed in 2.0
+
+- PHP 7.2+ required
+- Dropped Laravel 5.x support
+
+## Installation
+
+```shell
+composer require codegreencreative/laravel-samlidp:^2.0
+```
+
+The rest of the instructions for installation are the same as ^1.0
+
+# Laravel (5.6+) SAML IdP
 
 This package allows you to implement your own Identification Provider (idP) using the SAML 2.0 standard to be used with supporting SAML 2.0 Service Providers (SP).
 
@@ -10,7 +25,7 @@ This package allows you to implement your own Identification Provider (idP) usin
 Require this package with composer:
 
 ```shell
-composer require codegreencreative/laravel-samlidp
+composer require codegreencreative/laravel-samlidp:^1.0
 ```
 
 Publish config
