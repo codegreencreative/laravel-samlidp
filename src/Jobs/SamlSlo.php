@@ -2,17 +2,18 @@
 
 namespace CodeGreenCreative\SamlIdp\Jobs;
 
+use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
+use Illuminate\Foundation\Bus\Dispatchable;
 use LightSaml\Helper;
-use LightSaml\SamlConstants;
-use LightSaml\Model\Protocol\Status;
 use LightSaml\Model\Assertion\Issuer;
 use LightSaml\Model\Assertion\NameID;
-use LightSaml\Model\Protocol\StatusCode;
-use Illuminate\Foundation\Bus\Dispatchable;
+use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Protocol\LogoutRequest;
 use LightSaml\Model\Protocol\LogoutResponse;
-use LightSaml\Model\Context\DeserializationContext;
-use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
+use LightSaml\Model\Protocol\Status;
+use LightSaml\Model\Protocol\StatusCode;
+use LightSaml\Model\XmlDSig\SignatureWriter;
+use LightSaml\SamlConstants;
 
 class SamlSlo
 {
@@ -67,6 +68,10 @@ class SamlSlo
             ->setInResponseTo($this->logout_request->getId())
             ->setStatus(new Status(new StatusCode('urn:oasis:names:tc:SAML:2.0:status:Success')));
 
+        if (config('samlidp.messages_signed')) {
+            $this->response->setSignature(new SignatureWriter($this->certificate, $this->private_key));
+        }
+
         return $this->send(SamlConstants::BINDING_SAML2_HTTP_REDIRECT);
     }
 
@@ -82,6 +87,10 @@ class SamlSlo
             ->setID(Helper::generateID())
             ->setIssueInstant(new \DateTime)
             ->setDestination($this->destination);
+
+        if (config('samlidp.messages_signed')) {
+            $this->response->setSignature(new SignatureWriter($this->certificate, $this->private_key));
+        }
 
         return $this->send(SamlConstants::BINDING_SAML2_HTTP_REDIRECT);
     }

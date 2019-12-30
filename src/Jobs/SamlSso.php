@@ -2,31 +2,34 @@
 
 namespace CodeGreenCreative\SamlIdp\Jobs;
 
-use LightSaml\Helper;
-use LightSaml\SamlConstants;
-use LightSaml\Model\Protocol\Status;
+use CodeGreenCreative\SamlIdp\Contracts\SamlContract;
+use CodeGreenCreative\SamlIdp\Events\Assertion as AssertionEvent;
+use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
+use Illuminate\Foundation\Bus\Dispatchable;
 use LightSaml\Binding\BindingFactory;
+use LightSaml\Context\Profile\MessageContext;
+use LightSaml\Credential\KeyHelper;
+use LightSaml\Credential\X509Certificate;
+use LightSaml\Helper;
+use LightSaml\Model\Assertion\Assertion;
+use LightSaml\Model\Assertion\AttributeStatement;
+use LightSaml\Model\Assertion\AudienceRestriction;
+use LightSaml\Model\Assertion\AuthnContext;
+use LightSaml\Model\Assertion\AuthnStatement;
+use LightSaml\Model\Assertion\Conditions;
+use LightSaml\Model\Assertion\EncryptedAssertionWriter;
 use LightSaml\Model\Assertion\Issuer;
 use LightSaml\Model\Assertion\NameID;
 use LightSaml\Model\Assertion\Subject;
-use LightSaml\Model\Protocol\Response;
-use LightSaml\Model\Protocol\StatusCode;
-use LightSaml\Model\Assertion\Assertion;
-use LightSaml\Model\Assertion\Conditions;
-use LightSaml\Model\Protocol\AuthnRequest;
-use LightSaml\Model\Assertion\AuthnContext;
-use Illuminate\Foundation\Bus\Dispatchable;
-use LightSaml\Model\XmlDSig\SignatureWriter;
-use LightSaml\Context\Profile\MessageContext;
-use LightSaml\Model\Assertion\AuthnStatement;
-use LightSaml\Model\Assertion\AttributeStatement;
-use LightSaml\Model\Assertion\AudienceRestriction;
 use LightSaml\Model\Assertion\SubjectConfirmation;
-use LightSaml\Model\Context\DeserializationContext;
-use CodeGreenCreative\SamlIdp\Contracts\SamlContract;
 use LightSaml\Model\Assertion\SubjectConfirmationData;
-use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
-use CodeGreenCreative\SamlIdp\Events\Assertion as AssertionEvent;
+use LightSaml\Model\Context\DeserializationContext;
+use LightSaml\Model\Protocol\AuthnRequest;
+use LightSaml\Model\Protocol\Response;
+use LightSaml\Model\Protocol\Status;
+use LightSaml\Model\Protocol\StatusCode;
+use LightSaml\Model\XmlDSig\SignatureWriter;
+use LightSaml\SamlConstants;
 
 class SamlSso implements SamlContract
 {
@@ -62,12 +65,12 @@ class SamlSso implements SamlContract
     {
         $this->response = (new Response)->setIssuer(new Issuer($this->issuer))
             ->setStatus(new Status(new StatusCode('urn:oasis:names:tc:SAML:2.0:status:Success')))
-            ->addAssertion($assertion = new Assertion)
             ->setID(Helper::generateID())
             ->setIssueInstant(new \DateTime)
             ->setDestination($this->destination)
             ->setInResponseTo($this->authn_request->getId());
 
+        $assertion = new Assertion;
         $assertion
             ->setId(Helper::generateID())
             ->setIssueInstant(new \DateTime)
@@ -110,6 +113,22 @@ class SamlSso implements SamlContract
         // Add the attributes to the assertion
         $assertion->addItem($attribute_statement);
 
+        // Encrypt the assertion
+        if (config('samlidp.encrypt_assertion')) {
+            $this->setSpCertificate();
+            $encryptedAssertion = new EncryptedAssertionWriter();
+            $encryptedAssertion->encrypt($assertion, KeyHelper::createPublicKey(
+                (new X509Certificate)->loadPem($this->sp_certificate)
+            ));
+            $this->response->addEncryptedAssertion($encryptedAssertion);
+        } else {
+            $this->response->addAssertion($assertion);
+        }
+
+        if (config('samlidp.messages_signed')) {
+            $this->response->setSignature(new SignatureWriter($this->certificate, $this->private_key));
+        }
+
         return $this->send(SamlConstants::BINDING_SAML2_HTTP_POST);
     }
 
@@ -144,5 +163,13 @@ class SamlSso implements SamlContract
         $parsed_query_params['idp'] = config('app.url');
 
         $this->destination = strtok($destination, '?') . '?' . http_build_query($parsed_query_params);
+    }
+
+    public function setSpCertificate()
+    {
+        $this->sp_certificate = config(sprintf(
+            'samlidp.sp.%s.certificate',
+            $this->getServiceProvider($this->authn_request)
+        ));
     }
 }
