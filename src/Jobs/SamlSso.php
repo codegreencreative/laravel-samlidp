@@ -154,15 +154,10 @@ class SamlSso implements SamlContract
 
     private function setDestination()
     {
-        $destination = config(sprintf(
+        $this->destination = config(sprintf(
             'samlidp.sp.%s.destination',
             $this->getServiceProvider($this->authn_request)
         ));
-        $parsed_url = parse_url($destination);
-        parse_str($parsed_url['query'] ?? '', $parsed_query_params);
-        $parsed_query_params['idp'] = config('app.url');
-
-        $this->destination = strtok($destination, '?') . '?' . http_build_query($parsed_query_params);
     }
 
     public function setSpCertificate()
