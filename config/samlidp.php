@@ -33,9 +33,10 @@ return [
         // Base64 encoded ACS URL
         // 'aHR0cHM6Ly9teWZhY2Vib29rd29ya3BsYWNlLmZhY2Vib29rLmNvbS93b3JrL3NhbWwucGhw' => [
         //     // Your destination is the ACS URL of the Service Provider
-        //     'destination' => 'https://myfacebookworkplace.facebook.com/work/saml.php'
-        //     'logout' => 'https://myfacebookworkplace.facebook.com/work/sls.php'
-        //     'certificate' => ''
+        //     'destination' => 'https://myfacebookworkplace.facebook.com/work/saml.php',
+        //     'logout' => 'https://myfacebookworkplace.facebook.com/work/sls.php',
+        //     'certificate' => '',
+        //     'query_params' => false
         // ]
     ],
 
