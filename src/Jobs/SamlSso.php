@@ -30,6 +30,9 @@ use LightSaml\Model\Protocol\Status;
 use LightSaml\Model\Protocol\StatusCode;
 use LightSaml\Model\XmlDSig\SignatureWriter;
 use LightSaml\SamlConstants;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class SamlSso implements SamlContract
 {
@@ -116,6 +119,7 @@ class SamlSso implements SamlContract
         // Encrypt the assertion
         if (config('samlidp.encrypt_assertion')) {
             $this->setSpCertificate();
+
             $encryptedAssertion = new EncryptedAssertionWriter();
             $encryptedAssertion->encrypt($assertion, KeyHelper::createPublicKey(
                 (new X509Certificate)->loadPem($this->sp_certificate)
@@ -154,10 +158,33 @@ class SamlSso implements SamlContract
 
     private function setDestination()
     {
-        $this->destination = config(sprintf(
+        $destination = config(sprintf(
             'samlidp.sp.%s.destination',
             $this->getServiceProvider($this->authn_request)
         ));
+
+        $queryParams = $this->getQueryParams();
+        if (!empty($queryParams)) {
+            $destination = Str::finish(url($destination), '?') . Arr::query($queryParams);
+        }
+
+        $this->destination = $destination;
+    }
+
+    private function getQueryParams()
+    {
+        $queryParams = config(sprintf(
+            'samlidp.sp.%s.query_params',
+            $this->getServiceProvider($this->authn_request)
+        ));
+
+        if (is_null($queryParams)) {
+            $queryParams = [
+                'idp' => config('app.url')
+            ];
+        }
+
+        return $queryParams;
     }
 
     public function setSpCertificate()
