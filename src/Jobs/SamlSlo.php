@@ -14,6 +14,8 @@ use LightSaml\Model\Protocol\Status;
 use LightSaml\Model\Protocol\StatusCode;
 use LightSaml\Model\XmlDSig\SignatureWriter;
 use LightSaml\SamlConstants;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class SamlSlo
 {
@@ -98,10 +100,24 @@ class SamlSlo
     private function setDestination()
     {
         $destination = $this->sp['logout'];
-        $parsed_url = parse_url($destination);
-        parse_str($parsed_url['query'] ?? '', $parsed_query_params);
-        $parsed_query_params['idp'] = config('app.url');
+        $queryParams = $this->getQueryParams();
+        if (!empty($queryParams)) {
+            $destination = Str::finish(url($destination), '?') . Arr::query($queryParams);
+        }
 
-        $this->destination = strtok($destination, '?') . '?' . http_build_query($parsed_query_params);
+        $this->destination = $destination;
     }
+ 
+   private function getQueryParams()
+   {
+        $queryParams = (isset($this->sp['query_params']) ? $this->sp['query_params'] : null);
+
+        if (is_null($queryParams)) {
+            $queryParams = [
+                'idp' => config('app.url')
+            ];
+        }
+
+        return $queryParams;
+   }
 }
