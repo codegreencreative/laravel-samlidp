@@ -34,6 +34,7 @@ class LogoutController extends Controller
 
         if (config('samlidp.logout_after_slo')) {
             auth()->logout();
+            $request->session()->invalidate();
         }
 
         $request->session()->forget('saml.slo');
