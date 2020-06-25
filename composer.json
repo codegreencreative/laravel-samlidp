@@ -5,10 +5,16 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
-        "illuminate/support": "^6.0",
-        "illuminate/routing": "^6.0",
-        "lightsaml/lightsaml": "^1.4"
+        "illuminate/support": "^7.0",
+        "illuminate/routing": "^7.0",
+        "qikker-online/lightsaml": "^2.0"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/qikker-online/lightSAML.git"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "CodeGreenCreative\\SamlIdp\\": "src/"
