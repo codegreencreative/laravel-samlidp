@@ -6,7 +6,7 @@
 ## Whats changed in 3.0
 
 - PHP 7.3+ required
-- Dropped Laravel 5.x and 6.x support
+- Dropped Laravel 6.x support
 - Updated lightsaml package to a fork by @dpiquet https://github.com/4Labs/lightSAML
 
 ## Installation
