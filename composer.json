@@ -9,12 +9,6 @@
         "illuminate/routing": "^7.0",
         "forlabs/lightsaml": "^2.0"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/qikker-online/lightSAML.git"
-        }
-    ],
     "autoload": {
         "psr-4": {
             "CodeGreenCreative\\SamlIdp\\": "src/"
