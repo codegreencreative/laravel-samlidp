@@ -5,8 +5,8 @@
     "license": "MIT",
     "require": {
         "php": "^7.3",
-        "illuminate/support": "^7.0",
-        "illuminate/routing": "^7.0",
+        "illuminate/support": "^8.0",
+        "illuminate/routing": "^8.0",
         "forlabs/lightsaml": "^2.0"
     },
     "autoload": {
