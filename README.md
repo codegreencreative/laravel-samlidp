@@ -1,6 +1,18 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/codegreencreative/laravel-samlidp.svg?style=flat-square)](https://packagist.org/packages/codegreencreative/laravel-samlidp)
 [![Total Downloads](https://img.shields.io/packagist/dt/codegreencreative/laravel-samlidp.svg?style=flat-square)](https://packagist.org/packages/codegreencreative/laravel-samlidp)
 
+# Laravel (^8.0) SAML IdP
+
+## Whats changed in 4.0
+
+- Dropped Laravel 7.x support
+
+## Installation (not officially released)
+
+```shell
+composer require codegreencreative/laravel-samlidp:dev-master
+```
+
 # Laravel (^7.0) SAML IdP
 
 ## Whats changed in 3.0
