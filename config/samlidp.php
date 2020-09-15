@@ -44,5 +44,8 @@ return [
     // key is beginning of HTTP_REFERER value from SERVER, value is redirect path
     'sp_slo_redirects' => [
         // 'https://example.com' => 'https://example.com',
-    ]
+    ],
+
+    // List of guards saml idp will catch Authenticated, Login and Logout events 
+    'guards' => ['web']
 ];
