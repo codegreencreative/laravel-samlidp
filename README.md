@@ -6,11 +6,12 @@
 ## Whats changed in 4.0
 
 - Dropped Laravel 7.x support
+- Added guards for SAML SSO and SLO
 
-## Installation (not officially released)
+## Installation
 
 ```shell
-composer require codegreencreative/laravel-samlidp:dev-master
+composer require codegreencreative/laravel-samlidp:^4.0
 ```
 
 # Laravel (^7.0) SAML IdP
