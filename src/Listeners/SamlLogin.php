@@ -15,7 +15,7 @@ class SamlLogin
      */
     public function handle(Login $event)
     {
-        if (request()->filled('SAMLRequest') && ! request()->is('saml/logout')) {
+        if (in_array($event->guard, config('samlidp.guards')) && request()->filled('SAMLRequest') && ! request()->is('saml/logout')) {
             abort(response(SamlSso::dispatchNow()), 302);
         }
     }

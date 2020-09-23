@@ -129,8 +129,9 @@ return [
             // Simple Logout URL of the Service Provider
             'logout' => 'https://example.com/saml/sls',
         ]
-    ]
-
+    ],
+    // List of guards saml idp will catch Authenticated, Login and Logout events (thanks @abublihi)
+    'guards' => ['web']
 ];
 ```
 
