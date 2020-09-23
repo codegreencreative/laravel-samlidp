@@ -16,7 +16,7 @@ class SamlLogout
     public function handle(Logout $event)
     {
         // Make sure we are not in the process of SLO when handling the redirect
-        if (in_array($event->guard, config('samlidp.guards')) && ! session('saml.slo')) {
+        if (!session('saml.slo')) {
             abort(redirect('saml/logout'), 200);
         }
     }
