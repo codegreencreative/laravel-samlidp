@@ -6,6 +6,7 @@
 ## Whats changed in 4.0
 
 - Dropped Laravel 7.x support
+- Added guards for SAML SSO and SLO
 
 ## Installation (not officially released)
 
