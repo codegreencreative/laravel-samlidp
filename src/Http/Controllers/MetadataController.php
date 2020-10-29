@@ -2,7 +2,7 @@
 
 namespace CodeGreenCreative\SamlIdp\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Storage;
 
 class MetadataController extends Controller
