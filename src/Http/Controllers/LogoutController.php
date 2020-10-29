@@ -2,7 +2,7 @@
 
 namespace CodeGreenCreative\SamlIdp\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use CodeGreenCreative\SamlIdp\Jobs\SamlSlo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
