@@ -23,8 +23,8 @@ trait PerformsSingleSignOn
     protected function init()
     {
         $this->issuer = url(config('samlidp.issuer_uri'));
-        $this->certificate = (new X509Certificate)->loadPem(Storage::disk('samlidp')->get('cert.pem'));
-        $this->private_key = Storage::disk('samlidp')->get('key.pem');
+        $this->certificate = (new X509Certificate)->loadPem(Storage::disk('samlidp')->get(config('samlidp.certname', 'cert.pem')));
+        $this->private_key = Storage::disk('samlidp')->get(config('samlidp.keyname', 'key.pem'));
         $this->private_key = KeyHelper::createPrivateKey($this->private_key, '', false, XMLSecurityKey::RSA_SHA256);
     }
 
