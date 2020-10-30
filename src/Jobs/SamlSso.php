@@ -162,6 +162,15 @@ class SamlSso implements SamlContract
             $this->getServiceProvider($this->authn_request)
         ));
 
+        if (empty($destination)) {
+            throw new DestinationMissingException(
+                sprintf(
+                    '%s does not have a destination set in config file.',
+                    $this->getServiceProvider($this->authn_request)
+                )
+            );
+        }
+
         $queryParams = $this->getQueryParams();
         if (!empty($queryParams)) {
             $destination = Str::finish(url($destination), '?') . Arr::query($queryParams);
