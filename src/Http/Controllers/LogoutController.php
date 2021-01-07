@@ -21,6 +21,10 @@ class LogoutController extends Controller
             $slo_redirect = $request->session()->get('saml.slo_redirect');
         }
 
+        if (null === $request->session()->get('saml.slo')) {
+            $request->session()->put('saml.slo', []);
+        }
+
         // Need to broadcast to our other SAML apps to log out!
         // Loop through our service providers and "touch" the logout URL's
         foreach (config('samlidp.sp') as $key => $sp) {
