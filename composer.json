@@ -1,6 +1,6 @@
 {
     "name": "codegreencreative/laravel-samlidp",
-    "description": "Make your Laravel application an Idenification Provider using SAML 2.0.",
+    "description": "Make your PHP Laravel application an Idenification Provider using SAML 2.0. This package allows you to implement your own Identification Provider (idP) using the SAML 2.0 standard to be used with supporting SAML 2.0 Service Providers (SP).",
     "keywords": ["laravel", "saml", "saml 2.0", "auth", "acl", "sso", "idp"],
     "license": "MIT",
     "require": {
