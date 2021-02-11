@@ -4,6 +4,7 @@ namespace CodeGreenCreative\SamlIdp\Jobs;
 
 use CodeGreenCreative\SamlIdp\Contracts\SamlContract;
 use CodeGreenCreative\SamlIdp\Events\Assertion as AssertionEvent;
+use CodeGreenCreative\SamlIdp\Exceptions\DestinationMissingException;
 use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
 use Illuminate\Foundation\Bus\Dispatchable;
 use LightSaml\Binding\BindingFactory;
