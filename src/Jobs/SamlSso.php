@@ -7,6 +7,7 @@ use CodeGreenCreative\SamlIdp\Events\Assertion as AssertionEvent;
 use CodeGreenCreative\SamlIdp\Exceptions\DestinationMissingException;
 use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Auth;
 use LightSaml\Binding\BindingFactory;
 use LightSaml\Context\Profile\MessageContext;
 use LightSaml\Credential\KeyHelper;
@@ -38,11 +39,14 @@ class SamlSso implements SamlContract
 {
     use Dispatchable, PerformsSingleSignOn;
 
+    private string $guard;
+
     /**
      * [__construct description]
      */
-    public function __construct()
+    public function __construct($guard = null)
     {
+        $this->guard = $guard;
         $this->init();
     }
 
@@ -81,7 +85,7 @@ class SamlSso implements SamlContract
             ->setSignature(new SignatureWriter($this->certificate, $this->private_key))
             ->setSubject(
                 (new Subject)
-                    ->setNameID((new NameID(auth()->user()->email, SamlConstants::NAME_ID_FORMAT_EMAIL)))
+                    ->setNameID((new NameID(Auth::guard($this->guard)->user()->email, SamlConstants::NAME_ID_FORMAT_EMAIL)))
                     ->addSubjectConfirmation(
                         (new SubjectConfirmation)
                             ->setMethod(SamlConstants::CONFIRMATION_METHOD_BEARER)
@@ -112,7 +116,7 @@ class SamlSso implements SamlContract
             );
 
         $attribute_statement = new AttributeStatement;
-        event(new AssertionEvent($attribute_statement));
+        event(new AssertionEvent($attribute_statement, $this->guard));
         // Add the attributes to the assertion
         $assertion->addItem($attribute_statement);
 

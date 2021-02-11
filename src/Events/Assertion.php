@@ -2,9 +2,11 @@
 
 namespace CodeGreenCreative\SamlIdp\Events;
 
+use Illuminate\Support\Facades\Auth;
 use LightSaml\ClaimTypes;
 use Illuminate\Queue\SerializesModels;
 use LightSaml\Model\Assertion\Attribute;
+use LightSaml\Model\Assertion\AttributeStatement;
 
 class Assertion
 {
@@ -15,21 +17,26 @@ class Assertion
      *
      * @var object
      */
-    public $attribute_statement;
+    public AttributeStatement $attribute_statement;
 
     /**
-     * Create a new event instance.
+     * Optional guard name
      *
-     * @param  string $guard
-     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
-     * @param  bool  $remember
-     * @return void
+     * @var string|null
      */
-    public function __construct(\LightSaml\Model\Assertion\AttributeStatement &$attribute_statement)
+    public string $guard;
+
+    /**
+     * Assertion constructor.
+     * @param AttributeStatement $attribute_statement
+     * @param string|null $guard
+     */
+    public function __construct(AttributeStatement &$attribute_statement, string $guard = null)
     {
         $this->attribute_statement = &$attribute_statement;
+        $this->guard = $guard;
         $this->attribute_statement
-            ->addAttribute(new Attribute(ClaimTypes::EMAIL_ADDRESS, auth()->user()->email))
-            ->addAttribute(new Attribute(ClaimTypes::COMMON_NAME, auth()->user()->name));
+            ->addAttribute(new Attribute(ClaimTypes::EMAIL_ADDRESS, Auth::guard($this->guard)->user()->email))
+            ->addAttribute(new Attribute(ClaimTypes::COMMON_NAME, Auth::guard($this->guard)->user()->name));
     }
 }
