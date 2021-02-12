@@ -52,7 +52,10 @@ class LogoutController extends Controller
         // Look for return_to query in case of not relying on HTTP_REFERER
         $http_referer = $request->has('return_to') ? $request->get('return_to') : $request->server('HTTP_REFERER');
         $redirects = config('samlidp.sp_slo_redirects', []);
-        $slo_redirect = config('samlidp.login_uri');
+	$slo_redirect = config('samlidp.logged_out_uri');
+	if (!$slo_redirect) {
+	    $slo_redirect = config('samlidp.login_uri');
+	}
         foreach ($redirects as $referer => $redirectPath) {
             if (Str::startsWith($http_referer, $referer)) {
                 $slo_redirect = $redirectPath;
