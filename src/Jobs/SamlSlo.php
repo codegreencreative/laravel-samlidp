@@ -102,7 +102,12 @@ class SamlSlo
         $destination = $this->sp['logout'];
         $queryParams = $this->getQueryParams();
         if (!empty($queryParams)) {
-            $destination = Str::finish(url($destination), '?') . Arr::query($queryParams);
+            if (!parse_url($destination, PHP_URL_QUERY)){
+                $destination = Str::finish(url($destination), '?') . Arr::query($queryParams);
+            }
+            else{
+                $destination .= '&'.Arr::query($queryParams);
+            }
         }
 
         $this->destination = $destination;
