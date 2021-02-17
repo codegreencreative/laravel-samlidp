@@ -1,4 +1,4 @@
-# *** THIS VERSION IS NO LONGER MAINTAINED, [PLEASE USE V5](https://github.com/codegreencreative/laravel-samlidp) ***
+## *** THIS VERSION IS NO LONGER MAINTAINED, [PLEASE USE V5](https://github.com/codegreencreative/laravel-samlidp) ***
 
 # Laravel (^8.0) SAML IdP
 
