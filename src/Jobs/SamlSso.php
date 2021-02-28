@@ -27,6 +27,7 @@ use CodeGreenCreative\SamlIdp\Contracts\SamlContract;
 use LightSaml\Model\Assertion\SubjectConfirmationData;
 use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
 use CodeGreenCreative\SamlIdp\Events\Assertion as AssertionEvent;
+use RobRichards\XMLSecLibs\XMLSecurityDSig;
 
 class SamlSso implements SamlContract
 {
