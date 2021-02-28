@@ -1,5 +1,5 @@
 {
-    "name": "codegreencreative/laravel-samlidp",
+    "name": "maghonemi/laravel-samlidp",
     "description": "Make your Laravel application an Idenification Provider using SAML 2.0.",
     "keywords": ["laravel", "saml", "saml 2.0", "auth", "acl", "sso", "idp"],
     "license": "MIT",
@@ -11,7 +11,7 @@
     },
     "autoload": {
         "psr-4": {
-            "CodeGreenCreative\\SamlIdp\\": "src/"
+            "Maghonemi\\SamlIdp\\": "src/"
         }
     },
     "extra": {
@@ -20,7 +20,7 @@
         },
         "laravel": {
             "providers": [
-                "CodeGreenCreative\\SamlIdp\\LaravelSamlIdpServiceProvider"
+                "Maghonemi\\SamlIdp\\LaravelSamlIdpServiceProvider"
             ]
         }
     },
