@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeGreenCreative\SamlIdp\Jobs;
+namespace Maghonemi\SamlIdp\Jobs;
 
 use LightSaml\Helper;
 use LightSaml\SamlConstants;
@@ -23,11 +23,10 @@ use LightSaml\Model\Assertion\AttributeStatement;
 use LightSaml\Model\Assertion\AudienceRestriction;
 use LightSaml\Model\Assertion\SubjectConfirmation;
 use LightSaml\Model\Context\DeserializationContext;
-use CodeGreenCreative\SamlIdp\Contracts\SamlContract;
+use Maghonemi\SamlIdp\Contracts\SamlContract;
 use LightSaml\Model\Assertion\SubjectConfirmationData;
-use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
-use CodeGreenCreative\SamlIdp\Events\Assertion as AssertionEvent;
-use RobRichards\XMLSecLibs\XMLSecurityDSig;
+use Maghonemi\SamlIdp\Traits\PerformsSingleSignOn;
+use Maghonemi\SamlIdp\Events\Assertion as AssertionEvent;
 
 class SamlSso implements SamlContract
 {
@@ -61,7 +60,6 @@ class SamlSso implements SamlContract
 
     public function response()
     {
-       $XMLSecurityDSig=XMLSecurityDSig::SHA256;
         $this->response = (new Response)->setIssuer(new Issuer($this->issuer))
             ->setStatus(new Status(new StatusCode('urn:oasis:names:tc:SAML:2.0:status:Success')))
             ->addAssertion($assertion = new Assertion)
@@ -74,7 +72,7 @@ class SamlSso implements SamlContract
             ->setId(Helper::generateID())
             ->setIssueInstant(new \DateTime)
             ->setIssuer(new Issuer($this->issuer))
-            ->setSignature(new SignatureWriter($this->certificate, $this->private_key,$XMLSecurityDSig))
+            ->setSignature(new SignatureWriter($this->certificate, $this->private_key))
             ->setSubject(
                 (new Subject)
                     ->setNameID((new NameID(auth()->user()->email, SamlConstants::NAME_ID_FORMAT_EMAIL)))

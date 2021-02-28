@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeGreenCreative\SamlIdp\Listeners;
+namespace Maghonemi\SamlIdp\Listeners;
 
 use Illuminate\Auth\Events\Logout;
 

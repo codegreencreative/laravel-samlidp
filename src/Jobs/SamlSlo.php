@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeGreenCreative\SamlIdp\Jobs;
+namespace Maghonemi\SamlIdp\Jobs;
 
 use LightSaml\Helper;
 use LightSaml\SamlConstants;
@@ -12,7 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use LightSaml\Model\Protocol\LogoutRequest;
 use LightSaml\Model\Protocol\LogoutResponse;
 use LightSaml\Model\Context\DeserializationContext;
-use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
+use Maghonemi\SamlIdp\Traits\PerformsSingleSignOn;
 
 class SamlSlo
 {

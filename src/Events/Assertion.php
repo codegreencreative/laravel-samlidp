@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeGreenCreative\SamlIdp\Events;
+namespace Maghonemi\SamlIdp\Events;
 
 use LightSaml\ClaimTypes;
 use Illuminate\Queue\SerializesModels;

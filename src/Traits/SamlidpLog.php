@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeGreenCreative\SamlIdp\Traits;
+namespace Maghonemi\SamlIdp\Traits;
 
 use Illuminate\Support\Facades\Log;
 

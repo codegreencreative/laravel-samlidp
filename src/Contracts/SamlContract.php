@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeGreenCreative\SamlIdp\Contracts;
+namespace Maghonemi\SamlIdp\Contracts;
 
 interface SamlContract
 {

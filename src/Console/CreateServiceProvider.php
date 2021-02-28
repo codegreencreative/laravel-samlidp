@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeGreenCreative\SamlIdp\Console;
+namespace Maghonemi\SamlIdp\Console;
 
 use Illuminate\Console\Command;
 

@@ -1,5 +1,5 @@
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/codegreencreative/laravel-samlidp.svg?style=flat-square)](https://packagist.org/packages/codegreencreative/laravel-samlidp)
-[![Total Downloads](https://img.shields.io/packagist/dt/codegreencreative/laravel-samlidp.svg?style=flat-square)](https://packagist.org/packages/codegreencreative/laravel-samlidp)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/Maghonemi/laravel-samlidp.svg?style=flat-square)](https://packagist.org/packages/Maghonemi/laravel-samlidp)
+[![Total Downloads](https://img.shields.io/packagist/dt/Maghonemi/laravel-samlidp.svg?style=flat-square)](https://packagist.org/packages/Maghonemi/laravel-samlidp)
 
 # Laravel (5.6+) SAML idP
 
@@ -10,7 +10,7 @@ This package allows you to implement your own Identification Provider (idP) usin
 Require this package with composer:
 
 ```shell
-composer require codegreencreative/laravel-samlidp
+composer require Maghonemi/laravel-samlidp
 ```
 
 Publish config
@@ -141,7 +141,7 @@ This is because Laravel migrations, by default, only supply email and name field
 
 To add additional Claim Types, you can subscribe to the Assertion event:
 
-`CodeGreenCreative\SamlIdp\Events\Assertion`
+`Maghonemi\SamlIdp\Events\Assertion`
 
 Subscribing to the Event:
 
@@ -152,7 +152,7 @@ protected $listen = [
     'App\Events\Event' => [
         'App\Listeners\EventListener',
     ],
-    'CodeGreenCreative\SamlIdp\Events\Assertion' => [
+    'Maghonemi\SamlIdp\Events\Assertion' => [
         'App\Listeners\SamlAssertionAttributes'
     ]
 ];
@@ -167,7 +167,7 @@ namespace App\Listeners;
 
 use LightSaml\ClaimTypes;
 use LightSaml\Model\Assertion\Attribute;
-use CodeGreenCreative\SamlIdp\Events\Assertion;
+use Maghonemi\SamlIdp\Events\Assertion;
 
 class SamlAssertionAttributes
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace CodeGreenCreative\SamlIdp\Http\Controllers;
+namespace Maghonemi\SamlIdp\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use CodeGreenCreative\SamlIdp\Jobs\SamlSlo;
+use Maghonemi\SamlIdp\Jobs\SamlSlo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
