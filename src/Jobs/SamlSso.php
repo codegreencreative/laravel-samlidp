@@ -81,7 +81,7 @@ class SamlSso implements SamlContract
             ->setSignature(new SignatureWriter($this->certificate, $this->private_key))
             ->setSubject(
                 (new Subject)
-                    ->setNameID((new NameID(auth()->user()->email, SamlConstants::NAME_ID_FORMAT_EMAIL)))
+                    ->setNameID((new NameID(auth()->user()->__get(config('samlidp.email_field', 'email')), SamlConstants::NAME_ID_FORMAT_EMAIL)))
                     ->addSubjectConfirmation(
                         (new SubjectConfirmation)
                             ->setMethod(SamlConstants::CONFIRMATION_METHOD_BEARER)
