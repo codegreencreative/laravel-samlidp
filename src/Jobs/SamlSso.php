@@ -3,6 +3,8 @@
 namespace CodeGreenCreative\SamlIdp\Jobs;
 
 use LightSaml\Helper;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use LightSaml\SamlConstants;
 use LightSaml\Model\Protocol\Status;
 use LightSaml\Binding\BindingFactory;
@@ -136,13 +138,29 @@ class SamlSso implements SamlContract
     private function setDestination()
     {
         $destination = config(sprintf(
-            'samlidp.sp.%s.destination',
-            $this->getServiceProvider($this->authn_request)
-        ));
-        $parsed_url = parse_url($destination);
-        parse_str($parsed_url['query'] ?? '', $parsed_query_params);
-        $parsed_query_params['idp'] = config('app.url');
+                                  'samlidp.sp.%s.destination',
+                                  $this->getServiceProvider($this->authn_request)
+                              ));
 
-        $this->destination = strtok($destination, '?') . '?' . http_build_query($parsed_query_params);
+        if (empty($destination)) {
+            throw new \Exception(
+                sprintf(
+                    '%s does not have a destination set in config file.',
+                    $this->getServiceProvider($this->authn_request)
+                )
+            );
+        }
+
+        $queryParams = $this->getQueryParams();
+        if (!empty($queryParams)) {
+            if (!parse_url($destination, PHP_URL_QUERY)){
+                $destination = Str::finish(url($destination), '?') . Arr::query($queryParams);
+            }
+            else{
+                $destination .= '&'.Arr::query($queryParams);
+            }
+        }
+
+        $this->destination = $destination;
     }
 }
