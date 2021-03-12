@@ -29,7 +29,7 @@ class Assertion
     {
         $this->attribute_statement = &$attribute_statement;
         $this->attribute_statement
-            ->addAttribute(new Attribute(ClaimTypes::EMAIL_ADDRESS, auth()->user()->email))
+            ->addAttribute(new Attribute(ClaimTypes::EMAIL_ADDRESS, auth()->user()->__get(config('samlidp.email_field', 'email'))))
             ->addAttribute(new Attribute(ClaimTypes::COMMON_NAME, auth()->user()->name));
     }
 }
