@@ -7,6 +7,7 @@ use CodeGreenCreative\SamlIdp\Events\Assertion as AssertionEvent;
 use CodeGreenCreative\SamlIdp\Exceptions\DestinationMissingException;
 use CodeGreenCreative\SamlIdp\Traits\PerformsSingleSignOn;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Storage;
 use LightSaml\Binding\BindingFactory;
 use LightSaml\Context\Profile\MessageContext;
 use LightSaml\Credential\KeyHelper;
@@ -37,6 +38,10 @@ use Illuminate\Support\Str;
 class SamlSso implements SamlContract
 {
     use Dispatchable, PerformsSingleSignOn;
+
+    protected $authn_request;
+
+    protected $destination;
 
     /**
      * [__construct description]
@@ -122,7 +127,7 @@ class SamlSso implements SamlContract
 
             $encryptedAssertion = new EncryptedAssertionWriter();
             $encryptedAssertion->encrypt($assertion, KeyHelper::createPublicKey(
-                (new X509Certificate)->loadPem($this->sp_certificate)
+                $this->certificate
             ));
             $this->response->addEncryptedAssertion($encryptedAssertion);
         } else {
@@ -203,9 +208,11 @@ class SamlSso implements SamlContract
 
     public function setSpCertificate()
     {
-        $this->sp_certificate = config(sprintf(
+        $filename = config(sprintf(
             'samlidp.sp.%s.certificate',
             $this->getServiceProvider($this->authn_request)
-        ));
+        ), 'cert.pem');
+
+        $this->certificate = (new X509Certificate)->loadPem(Storage::disk('samlidp')->get($filename));
     }
 }
