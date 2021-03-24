@@ -88,9 +88,7 @@ class LaravelSamlIdpServiceProvider extends ServiceProvider
     public function registerBladeComponents()
     {
         Blade::directive('samlidp', function ($expression) {
-            if (request()->filled('SAMLRequest')) {
-                return "<?php echo view('samlidp::components.input'); ?>";
-            }
+            return "<?php echo request()->filled('SAMLRequest') ? view('samlidp::components.input') : ''; ?>";
         });
     }
 
