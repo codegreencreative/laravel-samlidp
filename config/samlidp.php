@@ -46,6 +46,20 @@ return [
         // 'https://example.com' => 'https://example.com',
     ],
 
-    // List of guards saml idp will catch Authenticated, Login and Logout events 
-    'guards' => ['web']
+    // List of guards saml idp will catch Authenticated, Login and Logout events
+    'guards' => ['web'],
+
+    // All of the Laravel SAML IdP event / listener mappings.
+    'events' => [
+        'CodeGreenCreative\SamlIdp\Events\Assertion' => [],
+        'Illuminate\Auth\Events\Logout' => [
+            'CodeGreenCreative\SamlIdp\Listeners\SamlLogout',
+        ],
+        'Illuminate\Auth\Events\Authenticated' => [
+            'CodeGreenCreative\SamlIdp\Listeners\SamlAuthenticated',
+        ],
+        'Illuminate\Auth\Events\Login' => [
+            'CodeGreenCreative\SamlIdp\Listeners\SamlLogin',
+        ],
+    ],
 ];
