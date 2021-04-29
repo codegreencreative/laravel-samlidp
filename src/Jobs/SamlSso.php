@@ -77,7 +77,7 @@ class SamlSso implements SamlContract
             ->setId(Helper::generateID())
             ->setIssueInstant(new \DateTime)
             ->setIssuer(new Issuer($this->issuer))
-            ->setSignature(new SignatureWriter($this->certificate, $this->private_key))
+            ->setSignature(new SignatureWriter($this->certificate, $this->private_key, $this->digest_algorithm))
             ->setSubject(
                 (new Subject)
                     ->setNameID((new NameID(auth()->user()->email, SamlConstants::NAME_ID_FORMAT_EMAIL)))
@@ -129,7 +129,7 @@ class SamlSso implements SamlContract
         }
 
         if (config('samlidp.messages_signed')) {
-            $this->response->setSignature(new SignatureWriter($this->certificate, $this->private_key));
+            $this->response->setSignature(new SignatureWriter($this->certificate, $this->private_key, $this->digest_algorithm));
         }
 
         return $this->send(SamlConstants::BINDING_SAML2_HTTP_POST);
