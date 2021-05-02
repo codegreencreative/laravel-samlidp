@@ -9,7 +9,7 @@ trait EventMap
      *
      * @var array
      */
-    protected $events = [
+    protected $default_events = [
         'CodeGreenCreative\SamlIdp\Events\Assertion' => [],
         'Illuminate\Auth\Events\Logout' => [
             'CodeGreenCreative\SamlIdp\Listeners\SamlLogout',
