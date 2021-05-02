@@ -109,7 +109,7 @@ class LaravelSamlIdpServiceProvider extends ServiceProvider
     private function registerEvents()
     {
         $events = $this->app->make(Dispatcher::class);
-        foreach (config('samlidp.events') as $event => $listeners) {
+        foreach (config('samlidp.events', $this->default_events) as $event => $listeners) {
             foreach ($listeners as $listener) {
                 $events->listen($event, $listener);
             }
