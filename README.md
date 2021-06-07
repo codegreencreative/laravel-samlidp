@@ -115,7 +115,7 @@ LOGOUT_AFTER_SLO=true
 If you wish to return the user back to the SP by which SLO was initiated, you may provide an additional query parameter to the `/saml/logout` route, for example:
 
 ```
-https://idp.com/saml/logout?redirect_to=mysp.com
+https://idp.com/saml/logout?return_to=mysp.com
 ```
 
 After all SP's have been logged out of, the user will be redirected to `mysp.com`. For this to work properly you need to add the `sp_slo_redirects` option to your `config/samlidp.php` config file, for example:
