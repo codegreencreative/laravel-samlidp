@@ -71,7 +71,7 @@ class SamlSlo
             ->setStatus(new Status(new StatusCode('urn:oasis:names:tc:SAML:2.0:status:Success')));
 
         if (config('samlidp.messages_signed')) {
-            $this->response->setSignature(new SignatureWriter($this->certificate, $this->private_key));
+            $this->response->setSignature(new SignatureWriter($this->certificate, $this->private_key, $this->digest_algorithm));
         }
 
         return $this->send(SamlConstants::BINDING_SAML2_HTTP_REDIRECT);
@@ -91,7 +91,7 @@ class SamlSlo
             ->setDestination($this->destination);
 
         if (config('samlidp.messages_signed')) {
-            $this->response->setSignature(new SignatureWriter($this->certificate, $this->private_key));
+            $this->response->setSignature(new SignatureWriter($this->certificate, $this->private_key, $this->digest_algorithm));
         }
 
         return $this->send(SamlConstants::BINDING_SAML2_HTTP_REDIRECT);
@@ -107,7 +107,7 @@ class SamlSlo
 
         $this->destination = $destination;
     }
- 
+
    private function getQueryParams()
    {
         $queryParams = (isset($this->sp['query_params']) ? $this->sp['query_params'] : null);
