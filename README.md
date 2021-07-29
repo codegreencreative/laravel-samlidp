@@ -195,3 +195,16 @@ class SamlAssertionAttributes
 }
 
 ```
+
+## Digest Algorithm (optional)
+
+See `\RobRichards\XMLSecLibs\XMLSecurityDSig` for all digest options.
+
+```php
+<?php
+
+return [
+    // Defind what digital algorithm you want to use
+    'digest_algorithm' => \RobRichards\XMLSecLibs\XMLSecurityDSig::SHA1,
+];
+```
