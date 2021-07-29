@@ -7,6 +7,7 @@ use LightSaml\Binding\BindingFactory;
 use LightSaml\Context\Profile\MessageContext;
 use LightSaml\Credential\KeyHelper;
 use LightSaml\Credential\X509Certificate;
+use RobRichards\XMLSecLibs\XMLSecurityDSig;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
 
 trait PerformsSingleSignOn
@@ -16,6 +17,7 @@ trait PerformsSingleSignOn
     private $private_key;
     private $request;
     private $response;
+    private $digest_algorithm;
 
     /**
      * [__construct description]
@@ -26,6 +28,7 @@ trait PerformsSingleSignOn
         $this->certificate = (new X509Certificate)->loadPem(Storage::disk('samlidp')->get(config('samlidp.certname', 'cert.pem')));
         $this->private_key = Storage::disk('samlidp')->get(config('samlidp.keyname', 'key.pem'));
         $this->private_key = KeyHelper::createPrivateKey($this->private_key, '', false, XMLSecurityKey::RSA_SHA256);
+        $this->digest_algorithm = config('samlidp.digest_algorithm', XMLSecurityDSig::SHA1);
     }
 
     /**
