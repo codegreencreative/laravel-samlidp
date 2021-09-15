@@ -24,7 +24,7 @@ return [
     'certname' => 'cert.pem',
     // Name of the certificate key PEM file
     'keyname' => 'key.pem',
-    // Encrypt requests and reponses
+    // Encrypt requests and responses
     'encrypt_assertion' => true,
     // Make sure messages are signed
     'messages_signed' => true,
