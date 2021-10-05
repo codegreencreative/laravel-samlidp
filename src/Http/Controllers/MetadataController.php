@@ -20,6 +20,7 @@ class MetadataController extends Controller
         }
 
         $cert = Storage::disk('samlidp')->get(config('samlidp.certname', 'cert.pem'));
+        $cert = trim($cert);
         $cert = preg_replace('/^\W+\w+\s+\w+\W+\s(.*)\s+\W+.*$/s', '$1', $cert);
         $cert = str_replace(PHP_EOL, "", $cert);
 
