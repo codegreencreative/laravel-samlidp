@@ -48,6 +48,6 @@ return [
         // 'https://example.com' => 'https://example.com',
     ],
 
-    // List of guards saml idp will catch Authenticated, Login and Logout events 
+    // List of guards saml idp will catch Authenticated, Login and Logout events
     'guards' => ['web']
 ];
