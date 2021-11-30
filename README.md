@@ -200,3 +200,5 @@ return [
     'digest_algorithm' => \RobRichards\XMLSecLibs\XMLSecurityDSig::SHA1,
 ];
 ```
+
+[Buy me a coffee](https://www.buymeacoffee.com/upwebdesign) :coffee:
