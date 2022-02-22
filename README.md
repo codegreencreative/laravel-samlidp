@@ -7,7 +7,7 @@
 
 This package allows you to implement your own Identification Provider (idP) using the SAML 2.0 standard to be used with supporting SAML 2.0 Service Providers (SP).
 
-Starting in version ^4.2, Laravel 9 is supported.
+Starting in version ^5.1, Laravel 9 is supported.
 
 In this version we will be allowing for Laravel ^7.0 or ^8.0.
 
