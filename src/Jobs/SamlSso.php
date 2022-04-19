@@ -118,11 +118,9 @@ class SamlSso implements SamlContract
 
         // Encrypt the assertion
         if (config('samlidp.encrypt_assertion')) {
-            $this->setSpCertificate();
-
             $encryptedAssertion = new EncryptedAssertionWriter();
             $encryptedAssertion->encrypt($assertion, KeyHelper::createPublicKey(
-                (new X509Certificate)->loadPem($this->sp_certificate)
+                $this->getSpCertificate()
             ));
             $this->response->addEncryptedAssertion($encryptedAssertion);
         } else {
@@ -139,8 +137,8 @@ class SamlSso implements SamlContract
     /**
      * [sendSamlRequest description]
      *
-     * @param  Request $request [description]
-     * @param  User    $user    [description]
+     * @param Request $request [description]
+     * @param User $user [description]
      * @return [type]           [description]
      */
     public function send($binding_type)
@@ -174,11 +172,10 @@ class SamlSso implements SamlContract
 
         $queryParams = $this->getQueryParams();
         if (!empty($queryParams)) {
-            if (!parse_url($destination, PHP_URL_QUERY)){
+            if (!parse_url($destination, PHP_URL_QUERY)) {
                 $destination = Str::finish(url($destination), '?') . Arr::query($queryParams);
-            }
-            else{
-                $destination .= '&'.Arr::query($queryParams);
+            } else {
+                $destination .= '&' . Arr::query($queryParams);
             }
         }
 
@@ -201,11 +198,15 @@ class SamlSso implements SamlContract
         return $queryParams;
     }
 
-    public function setSpCertificate()
+    private function getSpCertificate()
     {
-        $this->sp_certificate = config(sprintf(
+        $spCertificate = config(sprintf(
             'samlidp.sp.%s.certificate',
             $this->getServiceProvider($this->authn_request)
         ));
+
+        return (strpos($spCertificate, 'file://') === 0)
+            ? X509Certificate::fromFile($spCertificate)
+            : (new X509Certificate)->loadPem($spCertificate);
     }
 }
