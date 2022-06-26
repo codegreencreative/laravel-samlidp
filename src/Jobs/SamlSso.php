@@ -113,7 +113,7 @@ class SamlSso implements SamlContract
             );
 
         $attribute_statement = new AttributeStatement;
-        event(new AssertionEvent($attribute_statement));
+        event(new AssertionEvent($attribute_statement, $this->guard));
         // Add the attributes to the assertion
         $assertion->addItem($attribute_statement);
 
