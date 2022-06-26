@@ -25,11 +25,11 @@ class Assertion
      * @param  bool  $remember
      * @return void
      */
-    public function __construct(\LightSaml\Model\Assertion\AttributeStatement &$attribute_statement)
+    public function __construct(\LightSaml\Model\Assertion\AttributeStatement &$attribute_statement, $guard = null)
     {
         $this->attribute_statement = &$attribute_statement;
         $this->attribute_statement
-            ->addAttribute(new Attribute(ClaimTypes::EMAIL_ADDRESS, auth()->user()->__get(config('samlidp.email_field', 'email'))))
-            ->addAttribute(new Attribute(ClaimTypes::COMMON_NAME, auth()->user()->name));
+            ->addAttribute(new Attribute(ClaimTypes::EMAIL_ADDRESS, auth($guard)->user()->__get(config('samlidp.email_field', 'email'))))
+            ->addAttribute(new Attribute(ClaimTypes::COMMON_NAME, auth($guard)->user()->name));
     }
 }
