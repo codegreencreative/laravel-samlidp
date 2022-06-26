@@ -41,8 +41,9 @@ class SamlSso implements SamlContract
     /**
      * [__construct description]
      */
-    public function __construct()
+    public function __construct($guard = null)
     {
+        $this->guard = $guard;
         $this->init();
     }
 
