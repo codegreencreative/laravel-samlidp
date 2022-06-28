@@ -41,8 +41,9 @@ class SamlSso implements SamlContract
     /**
      * [__construct description]
      */
-    public function __construct()
+    public function __construct($guard = null)
     {
+        $this->guard = $guard;
         $this->init();
     }
 
@@ -81,7 +82,7 @@ class SamlSso implements SamlContract
             ->setSignature(new SignatureWriter($this->certificate, $this->private_key, $this->digest_algorithm))
             ->setSubject(
                 (new Subject)
-                    ->setNameID((new NameID(auth()->user()->__get(config('samlidp.email_field', 'email')), SamlConstants::NAME_ID_FORMAT_EMAIL)))
+                    ->setNameID((new NameID(auth($this->guard)->user()->__get(config('samlidp.email_field', 'email')), SamlConstants::NAME_ID_FORMAT_EMAIL)))
                     ->addSubjectConfirmation(
                         (new SubjectConfirmation)
                             ->setMethod(SamlConstants::CONFIRMATION_METHOD_BEARER)
@@ -112,7 +113,7 @@ class SamlSso implements SamlContract
             );
 
         $attribute_statement = new AttributeStatement;
-        event(new AssertionEvent($attribute_statement));
+        event(new AssertionEvent($attribute_statement, $this->guard));
         // Add the attributes to the assertion
         $assertion->addItem($attribute_statement);
 
