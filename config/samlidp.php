@@ -20,9 +20,13 @@ return [
     'logout_after_slo' => env('LOGOUT_AFTER_SLO', false),
     // The URI to the saml metadata file, this describes your idP
     'issuer_uri' => 'saml/metadata',
-    // Name of the certificate PEM file
+    // The certificate
+    'cert' => env('SAMLIDP_CERT'),
+    // Name of the certificate PEM file, ignored if cert is used
     'certname' => 'cert.pem',
-    // Name of the certificate key PEM file
+    // The certificate key
+    'key' => env('SAMLIDP_KEY'),
+    // Name of the certificate key PEM file, ignored if key is used
     'keyname' => 'key.pem',
     // Encrypt requests and responses
     'encrypt_assertion' => true,

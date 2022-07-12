@@ -56,6 +56,8 @@ Options:
   --certname=<name>  Name of the certificate file [default: cert.pem]
 ```
 
+Optionally, you can set the certificate and key using two environment variables: `SAMLIDP_CERT` and `SAMLIDP_KEY`.
+
 ## Usage
 
 Within your login view, probably `resources/views/auth/login.blade.php` add the SAMLRequest directive beneath the CSRF directive:
