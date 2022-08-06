@@ -108,7 +108,7 @@ class SamlSso implements SamlContract
                     ->setSessionIndex(Helper::generateID())
                     ->setAuthnContext(
                         (new AuthnContext)
-                            ->setAuthnContextClassRef(SamlConstants::NAME_ID_FORMAT_UNSPECIFIED)
+                            ->setAuthnContextClassRef(SamlConstants::AUTHN_CONTEXT_UNSPECIFIED)
                     )
             );
 
