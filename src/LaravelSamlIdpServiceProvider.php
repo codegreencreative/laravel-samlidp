@@ -1,21 +1,21 @@
 <?php
 
-namespace CodeGreenCreative\SamlIdp;
-
 /**
- * The service provider for laravel-samleidp
+ * The service provider for laravel-samlidp
  *
  * @license MIT
  */
 
-use CodeGreenCreative\SamlIdp\Console\CreateCertificate;
-use CodeGreenCreative\SamlIdp\Console\CreateServiceProvider;
-use CodeGreenCreative\SamlIdp\Traits\EventMap;
-use Illuminate\Contracts\Events\Dispatcher;
+namespace CodeGreenCreative\SamlIdp;
+
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Events\Dispatcher;
+use CodeGreenCreative\SamlIdp\Traits\EventMap;
+use CodeGreenCreative\SamlIdp\Console\CreateCertificate;
+use CodeGreenCreative\SamlIdp\Console\CreateServiceProvider;
 
 class LaravelSamlIdpServiceProvider extends ServiceProvider
 {
@@ -65,17 +65,23 @@ class LaravelSamlIdpServiceProvider extends ServiceProvider
     public function offerPublishing()
     {
         if ($this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__ . '/../resources/views' => resource_path('views/vendor/samlidp'),
-            ], 'samlidp_views');
+            $this->publishes(
+                [
+                    __DIR__ . '/../resources/views' => resource_path('views/vendor/samlidp'),
+                ],
+                'samlidp_views'
+            );
 
-            $this->publishes([
-                __DIR__ . '/../config/samlidp.php' => config_path('samlidp.php'),
-            ], 'samlidp_config');
+            $this->publishes(
+                [
+                    __DIR__ . '/../config/samlidp.php' => config_path('samlidp.php'),
+                ],
+                'samlidp_config'
+            );
 
             // Create storage/samlidp directory
-            if (!file_exists(storage_path() . "/samlidp")) {
-                mkdir(storage_path() . "/samlidp", 0755, true);
+            if (!file_exists(storage_path() . '/samlidp')) {
+                mkdir(storage_path() . '/samlidp', 0755, true);
             }
         }
     }
@@ -126,7 +132,8 @@ class LaravelSamlIdpServiceProvider extends ServiceProvider
         Route::name('saml.')
             ->prefix('saml')
             ->namespace('CodeGreenCreative\SamlIdp\Http\Controllers')
-            ->middleware('web')->group(function () {
+            ->middleware('web')
+            ->group(function () {
                 $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
             });
     }
@@ -149,10 +156,7 @@ class LaravelSamlIdpServiceProvider extends ServiceProvider
     private function registerCommands()
     {
         if ($this->app->runningInConsole()) {
-            $this->commands([
-                CreateCertificate::class,
-                CreateServiceProvider::class,
-            ]);
+            $this->commands([CreateCertificate::class, CreateServiceProvider::class]);
         }
     }
 }

@@ -11,14 +11,8 @@ trait EventMap
      */
     protected $default_events = [
         'CodeGreenCreative\SamlIdp\Events\Assertion' => [],
-        'Illuminate\Auth\Events\Logout' => [
-            'CodeGreenCreative\SamlIdp\Listeners\SamlLogout',
-        ],
-        'Illuminate\Auth\Events\Authenticated' => [
-            'CodeGreenCreative\SamlIdp\Listeners\SamlAuthenticated',
-        ],
-        'Illuminate\Auth\Events\Login' => [
-            'CodeGreenCreative\SamlIdp\Listeners\SamlLogin',
-        ],
+        'Illuminate\Auth\Events\Logout' => ['CodeGreenCreative\SamlIdp\Listeners\SamlLogout'],
+        'Illuminate\Auth\Events\Authenticated' => ['CodeGreenCreative\SamlIdp\Listeners\SamlAuthenticated'],
+        'Illuminate\Auth\Events\Login' => ['CodeGreenCreative\SamlIdp\Listeners\SamlLogin'],
     ];
 }

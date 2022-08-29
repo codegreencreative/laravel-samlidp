@@ -47,6 +47,6 @@ class CreateServiceProvider extends Command
         $this->line("'{$encodedAcsUrl}' => [");
         $this->line("    'destination' => '{$acsUrl}',");
         $this->line("    'logout' => '{$logoutUrl}',");
-        $this->line("]");
+        $this->line(']');
     }
 }

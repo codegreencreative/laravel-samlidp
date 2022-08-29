@@ -2,13 +2,13 @@
 
 namespace CodeGreenCreative\SamlIdp\Traits;
 
-use Illuminate\Support\Facades\Storage;
-use LightSaml\Binding\BindingFactory;
-use LightSaml\Context\Profile\MessageContext;
 use LightSaml\Credential\KeyHelper;
+use LightSaml\Binding\BindingFactory;
+use Illuminate\Support\Facades\Storage;
 use LightSaml\Credential\X509Certificate;
-use RobRichards\XMLSecLibs\XMLSecurityDSig;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
+use RobRichards\XMLSecLibs\XMLSecurityDSig;
+use LightSaml\Context\Profile\MessageContext;
 
 trait PerformsSingleSignOn
 {
@@ -25,7 +25,9 @@ trait PerformsSingleSignOn
     protected function init()
     {
         $this->issuer = url(config('samlidp.issuer_uri'));
-        $this->certificate = (new X509Certificate)->loadPem(Storage::disk('samlidp')->get(config('samlidp.certname', 'cert.pem')));
+        $this->certificate = (new X509Certificate())->loadPem(
+            Storage::disk('samlidp')->get(config('samlidp.certname', 'cert.pem'))
+        );
         $this->private_key = Storage::disk('samlidp')->get(config('samlidp.keyname', 'key.pem'));
         $this->private_key = KeyHelper::createPrivateKey($this->private_key, '', false, XMLSecurityKey::RSA_SHA256);
         $this->digest_algorithm = config('samlidp.digest_algorithm', XMLSecurityDSig::SHA1);
@@ -41,12 +43,12 @@ trait PerformsSingleSignOn
     protected function send($binding_type, $as = 'asResponse')
     {
         // The response will be to the sls URL of the SP
-        $bindingFactory = new BindingFactory;
+        $bindingFactory = new BindingFactory();
         $binding = $bindingFactory->create($binding_type);
         $messageContext = new MessageContext();
         $messageContext->setMessage($this->response)->$as();
         $message = $messageContext->getMessage();
-        if (! empty(request()->filled('RelayState'))) {
+        if (!empty(request()->filled('RelayState'))) {
             $message->setRelayState(request('RelayState'));
         }
         $httpResponse = $binding->send($messageContext);
