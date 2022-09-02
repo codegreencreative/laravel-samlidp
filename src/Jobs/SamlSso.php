@@ -212,6 +212,7 @@ class SamlSso implements SamlContract
         return (strpos($spCertificate, 'file://') === 0)
             ? X509Certificate::fromFile($spCertificate)
             : (new X509Certificate)->loadPem($spCertificate);
+    }
 
     /**
      * Check to see if the SP wants to encrypt assertions first
