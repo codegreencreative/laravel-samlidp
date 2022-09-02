@@ -95,10 +95,16 @@ return [
             'destination' => 'https://example.com/saml/acs',
             // Simple Logout URL of the Service Provider
             'logout' => 'https://example.com/saml/sls',
-        ]
+            // SP certificate
+            // 'certificate' => '',
+            // Turn off auto appending of the idp query param
+            // 'query_params' => false,
+            // Turn off the encryption of the assertion per SP
+            // 'encrypt_assertion' => false
+        ],
     ],
     // List of guards saml idp will catch Authenticated, Login and Logout events (thanks @abublihi)
-    'guards' => ['web']
+    'guards' => ['web'],
 ];
 ```
 
@@ -133,7 +139,6 @@ return [
     'sp_slo_redirects' => [
         'mysp.com' => 'https://mysp.com',
     ],
-
 ];
 ```
 
@@ -187,7 +192,6 @@ class SamlAssertionAttributes
             ->addAttribute(new Attribute(ClaimTypes::NAME, auth()->user()->name));
     }
 }
-
 ```
 
 ## Digest Algorithm (optional)
