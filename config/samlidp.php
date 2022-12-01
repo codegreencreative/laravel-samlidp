@@ -13,6 +13,8 @@ return [
     'debug' => false,
     // Define the email address field name in the users table
     'email_field' => 'email',
+    // Define the name field in the users table
+    'name_field' => 'name',
     // The URI to your login page
     'login_uri' => 'login',
     // Log out of the IdP after SLO
