@@ -72,11 +72,6 @@ class LaravelSamlIdpServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__ . '/../config/samlidp.php' => config_path('samlidp.php'),
             ], 'samlidp_config');
-
-            // Create storage/samlidp directory
-            if (!file_exists(storage_path() . "/samlidp")) {
-                mkdir(storage_path() . "/samlidp", 0755, true);
-            }
         }
     }
 
