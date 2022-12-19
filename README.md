@@ -108,6 +108,64 @@ return [
 ];
 ```
 
+### Setting the service provider certificate
+There are three options to set the service provider certificate.
+
+1. Provide the certificate as a string:
+```php
+<?php
+
+return [
+    // ...
+    'sp' => [
+        // Base64 encoded ACS URL
+        'aHR0cHM6Ly9teWZhY2Vib29rd29ya3BsYWNlLmZhY2Vib29rLmNvbS93b3JrL3NhbWwucGhw' => [
+            // ...
+            // SP certificate
+            // 'certificate' => "-----BEGIN CERTIFICATE-----\nb3BlbnNzaC1rZXktdjEA...LWdlbmVyYXRlZC1rZXkBAgM\n-----END CERTIFICATE-----"
+        ],
+    ],
+    // ...
+];
+```
+
+2. Load from a variable within the `.env` file.
+You can choose an appropriate variable name that best matches your projects requirements.
+```php
+<?php
+
+return [
+    // ...
+    'sp' => [
+        // Base64 encoded ACS URL
+        'aHR0cHM6Ly9teWZhY2Vib29rd29ya3BsYWNlLmZhY2Vib29rLmNvbS93b3JrL3NhbWwucGhw' => [
+            // ...
+            // SP certificate
+            // 'certificate' => env('SAML_SP_CERTIFICATE', '')
+        ],
+    ],
+    // ...
+];
+```
+
+3. Load the certificate from a file:
+```php
+<?php
+
+return [
+    // ...
+    'sp' => [
+        // Base64 encoded ACS URL
+        'aHR0cHM6Ly9teWZhY2Vib29rd29ya3BsYWNlLmZhY2Vib29rLmNvbS93b3JrL3NhbWwucGhw' => [
+            // ...
+            // SP certificate
+            // 'certificate' => 'file://' . storage_path('samlidp/service-provider.pem')
+        ],
+    ],
+    // ...
+];
+```
+
 ## Log out of IdP after SLO
 
 If you wish to log out of the IdP after SLO has completed, set `LOGOUT_AFTER_SLO` to `true` in your `.env` perform the logout action on the Idp.

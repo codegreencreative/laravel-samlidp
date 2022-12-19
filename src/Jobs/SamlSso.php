@@ -124,14 +124,12 @@ class SamlSso implements SamlContract
         $assertion->addItem($attribute_statement);
 
         // Encrypt the assertion
-        if ($this->encryptAssertion()) {
-            $this->setSpCertificate();
 
+        if ($this->encryptAssertion()) {
             $encryptedAssertion = new EncryptedAssertionWriter();
-            $encryptedAssertion->encrypt(
-                $assertion,
-                KeyHelper::createPublicKey((new X509Certificate())->loadPem($this->sp_certificate))
-            );
+            $encryptedAssertion->encrypt($assertion, KeyHelper::createPublicKey(
+                $this->getSpCertificate()
+            ));
             $this->response->addEncryptedAssertion($encryptedAssertion);
         } else {
             $this->response->addAssertion($assertion);
@@ -149,8 +147,8 @@ class SamlSso implements SamlContract
     /**
      * [sendSamlRequest description]
      *
-     * @param  Request $request [description]
-     * @param  User    $user    [description]
+     * @param Request $request [description]
+     * @param User $user [description]
      * @return [type]           [description]
      */
     public function send($binding_type)
@@ -204,14 +202,16 @@ class SamlSso implements SamlContract
         return $queryParams;
     }
 
-    /**
-     * @return void
-     */
-    private function setSpCertificate()
+    private function getSpCertificate()
     {
-        $this->sp_certificate = config(
-            sprintf('samlidp.sp.%s.certificate', $this->getServiceProvider($this->authn_request))
-        );
+        $spCertificate = config(sprintf(
+            'samlidp.sp.%s.certificate',
+            $this->getServiceProvider($this->authn_request)
+        ));
+
+        return (strpos($spCertificate, 'file://') === 0)
+            ? X509Certificate::fromFile($spCertificate)
+            : (new X509Certificate)->loadPem($spCertificate);
     }
 
     /**
