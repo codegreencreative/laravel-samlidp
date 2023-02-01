@@ -8,6 +8,7 @@
 This package allows you to implement your own Identification Provider (idP) using the SAML 2.0 standard to be used with supporting SAML 2.0 Service Providers (SP).
 
 Starting in version ^5.1, Laravel 9 is supported.
+Starting in version ^5.2.3, Laravel 10 is supported.
 
 In this version we will be allowing for Laravel ^7.0 or ^8.0.
 
@@ -111,9 +112,11 @@ return [
 ```
 
 ### Setting the service provider certificate
+
 There are three options to set the service provider certificate.
 
 1. Provide the certificate as a string:
+
 ```php
 <?php
 
@@ -132,7 +135,8 @@ return [
 ```
 
 2. Load from a variable within the `.env` file.
-You can choose an appropriate variable name that best matches your projects requirements.
+   You can choose an appropriate variable name that best matches your projects requirements.
+
 ```php
 <?php
 
@@ -151,6 +155,7 @@ return [
 ```
 
 3. Load the certificate from a file:
+
 ```php
 <?php
 
