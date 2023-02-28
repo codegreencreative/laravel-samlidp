@@ -2,6 +2,7 @@
 
 namespace CodeGreenCreative\SamlIdp\Http\Controllers;
 
+use LightSaml\SamlConstants;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Storage;
 
@@ -29,9 +30,11 @@ class MetadataController extends Controller
         }
 
         $cert = preg_replace('/^\W+\w+\s+\w+\W+\s(.*)\s+\W+.*$/s', '$1', trim($cert));
-        $cert = str_replace(PHP_EOL, "", $cert);
+        $cert = str_replace(PHP_EOL, '', $cert);
 
-        return response(view('samlidp::metadata', compact('cert')), 200, [
+        $nameIdFormat = config('samlidp.name_id_format', SamlConstants::NAME_ID_FORMAT_EMAIL);
+
+        return response(view('samlidp::metadata', compact('cert', 'nameIdFormat')), 200, [
             'Content-Type' => 'application/xml',
         ]);
     }
