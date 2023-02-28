@@ -86,7 +86,23 @@ class SamlSso implements SamlContract
             ->setIssueInstant(new \DateTime())
             ->setIssuer(new Issuer($this->issuer))
             ->setSignature(new SignatureWriter($this->certificate, $this->private_key, $this->digest_algorithm))
-            ->setSubject(
+            ->setConditions(
+                (new Conditions())
+                    ->setNotBefore(new \DateTime())
+                    ->setNotOnOrAfter(new \DateTime('+1 MINUTE'))
+                    ->addItem(new AudienceRestriction([$this->authn_request->getIssuer()->getValue()]))
+            )
+            ->addItem(
+                (new AuthnStatement())
+                    ->setAuthnInstant(new \DateTime('-10 MINUTE'))
+                    ->setSessionIndex(Helper::generateID())
+                    ->setAuthnContext(
+                        (new AuthnContext())->setAuthnContextClassRef(SamlConstants::NAME_ID_FORMAT_UNSPECIFIED)
+                    )
+            );
+
+        if (config('samlidp.use_name_id', true)) {
+            $assertion->setSubject(
                 (new Subject())
                     ->setNameID(
                         new NameID(
@@ -106,21 +122,8 @@ class SamlSso implements SamlContract
                                     ->setRecipient($this->authn_request->getAssertionConsumerServiceURL())
                             )
                     )
-            )
-            ->setConditions(
-                (new Conditions())
-                    ->setNotBefore(new \DateTime())
-                    ->setNotOnOrAfter(new \DateTime('+1 MINUTE'))
-                    ->addItem(new AudienceRestriction([$this->authn_request->getIssuer()->getValue()]))
-            )
-            ->addItem(
-                (new AuthnStatement())
-                    ->setAuthnInstant(new \DateTime('-10 MINUTE'))
-                    ->setSessionIndex(Helper::generateID())
-                    ->setAuthnContext(
-                        (new AuthnContext())->setAuthnContextClassRef(SamlConstants::NAME_ID_FORMAT_UNSPECIFIED)
-                    )
             );
+        }
 
         $attribute_statement = new AttributeStatement();
         event(new AssertionEvent($attribute_statement, $this->guard));
