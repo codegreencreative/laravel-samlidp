@@ -15,6 +15,8 @@ return [
     'email_field' => 'email',
     // Define the name field in the users table
     'name_field' => 'name',
+    // Defiine the NameID (optional)
+    // 'name_id_format' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
     // The URI to your login page
     'login_uri' => 'login',
     // Log out of the IdP after SLO
