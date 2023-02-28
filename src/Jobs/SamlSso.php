@@ -39,6 +39,10 @@ class SamlSso implements SamlContract
     use Dispatchable;
     use PerformsSingleSignOn;
 
+    private $guard;
+    private $authn_request;
+    private $destination;
+
     /**
      * [__construct description]
      */
@@ -89,7 +93,7 @@ class SamlSso implements SamlContract
                             auth($this->guard)
                                 ->user()
                                 ->__get(config('samlidp.email_field', 'email')),
-                            SamlConstants::NAME_ID_FORMAT_EMAIL
+                            config('samlidp.name_id_format', SamlConstants::NAME_ID_FORMAT_EMAIL)
                         )
                     )
                     ->addSubjectConfirmation(
@@ -124,12 +128,9 @@ class SamlSso implements SamlContract
         $assertion->addItem($attribute_statement);
 
         // Encrypt the assertion
-
         if ($this->encryptAssertion()) {
             $encryptedAssertion = new EncryptedAssertionWriter();
-            $encryptedAssertion->encrypt($assertion, KeyHelper::createPublicKey(
-                $this->getSpCertificate()
-            ));
+            $encryptedAssertion->encrypt($assertion, KeyHelper::createPublicKey($this->getSpCertificate()));
             $this->response->addEncryptedAssertion($encryptedAssertion);
         } else {
             $this->response->addAssertion($assertion);
@@ -204,14 +205,11 @@ class SamlSso implements SamlContract
 
     private function getSpCertificate()
     {
-        $spCertificate = config(sprintf(
-            'samlidp.sp.%s.certificate',
-            $this->getServiceProvider($this->authn_request)
-        ));
+        $spCertificate = config(sprintf('samlidp.sp.%s.certificate', $this->getServiceProvider($this->authn_request)));
 
-        return (strpos($spCertificate, 'file://') === 0)
+        return strpos($spCertificate, 'file://') === 0
             ? X509Certificate::fromFile($spCertificate)
-            : (new X509Certificate)->loadPem($spCertificate);
+            : (new X509Certificate())->loadPem($spCertificate);
     }
 
     /**
