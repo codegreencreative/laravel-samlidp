@@ -20,7 +20,7 @@ class SamlLogin
             request()->filled('SAMLRequest') &&
             !request()->is('saml/logout')
         ) {
-            abort(response(SamlSso::dispatchSync($event->guard)), 302);
+            abort(response(SamlSso::dispatchSync($event->guard), 302));
         }
     }
 }
