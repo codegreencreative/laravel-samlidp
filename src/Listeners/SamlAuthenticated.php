@@ -21,7 +21,7 @@ class SamlAuthenticated
             !request()->is('saml/logout') &&
             request()->isMethod('get')
         ) {
-            abort(response(SamlSso::dispatchSync($event->guard)), 302);
+            abort(response(SamlSso::dispatchSync($event->guard), 302));
         }
     }
 }
