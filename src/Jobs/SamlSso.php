@@ -56,7 +56,11 @@ class SamlSso implements SamlContract
     public function handle()
     {
         $deserializationContext = new DeserializationContext();
-        $deserializationContext->getDocument()->loadXML(gzinflate(base64_decode(request('SAMLRequest'))));
+        $b64decode = base64_decode(request('SAMLRequest'));
+        $is_gzip = $this->isGzipped($b64decode);
+        $xml = $is_gzip ? gzinflate($b64decode) : $b64decode;
+        $deserializationContext->getDocument()->loadXML($xml);
+
 
         $this->authn_request = new AuthnRequest();
         $this->authn_request->deserialize($deserializationContext->getDocument()->firstChild, $deserializationContext);
@@ -64,6 +68,16 @@ class SamlSso implements SamlContract
         $this->setDestination();
 
         return $this->response();
+    }
+
+    protected function isGzipped($in) {
+	    if (mb_strpos($in , "\x1f" . "\x8b" . "\x08")===0) {
+	        return true;
+	    } else if (@gzinflate($in)!==false) {
+	        return true;
+        } else {
+	        return false;
+      }
     }
 
     public function response()
