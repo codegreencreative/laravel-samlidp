@@ -18,6 +18,7 @@ use LightSaml\Model\Protocol\StatusCode;
 use LightSaml\Credential\X509Certificate;
 use LightSaml\Model\Assertion\Conditions;
 use LightSaml\Model\Protocol\AuthnRequest;
+use RobRichards\XMLSecLibs\XMLSecurityKey;
 use Illuminate\Foundation\Bus\Dispatchable;
 use LightSaml\Model\Assertion\AuthnContext;
 use LightSaml\Model\XmlDSig\SignatureWriter;
@@ -126,7 +127,7 @@ class SamlSso implements SamlContract
         // Encrypt the assertion
 
         if ($this->encryptAssertion()) {
-            $encryptedAssertion = new EncryptedAssertionWriter();
+            $encryptedAssertion = $this->getEncryptionAssertionWriter();
             $encryptedAssertion->encrypt($assertion, KeyHelper::createPublicKey(
                 $this->getSpCertificate()
             ));
@@ -227,5 +228,21 @@ class SamlSso implements SamlContract
             sprintf('samlidp.sp.%s.encrypt_assertion', $this->getServiceProvider($this->authn_request)),
             config('samlidp.encrypt_assertion', true)
         );
+    }
+
+    private function getEncryptionAssertionWriter() {
+        $blockEncryptionAlgorithm = config(sprintf(
+            'samlidp.sp.%s.block_encryption_algorithm', $this->getServiceProvider($this->authn_request)
+        ));
+
+        $keyTransportEncryption = config(sprintf(
+            'samlidp.sp.%s.key_transport_encryption', $this->getServiceProvider($this->authn_request)
+        ));
+
+        // because PHP < 7.4 is supported in this package we can't use the null coalescing assignment operator (??=)
+        $blockEncryptionAlgorithm = $blockEncryptionAlgorithm ?? XMLSecurityKey::AES128_CBC;
+        $keyTransportEncryption = $keyTransportEncryption ?? XMLSecurityKey::RSA_1_5;
+
+        return new EncryptedAssertionWriter($blockEncryptionAlgorithm, $keyTransportEncryption);
     }
 }
