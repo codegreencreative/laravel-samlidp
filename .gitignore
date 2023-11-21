@@ -3,3 +3,4 @@ composer.lock
 vendor
 .DS_Store
 node_modules
+workbench
