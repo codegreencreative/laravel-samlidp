@@ -1,8 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace CodeGreenCreative\SamlIdp\Tests;
 
-abstract class TestCase extends \Orchestra\Testbench\TestCase
+use \Orchestra\Testbench\TestCase as OrchestraTestCase;
+
+abstract class TestCase extends OrchestraTestCase
 {
     //
 }
