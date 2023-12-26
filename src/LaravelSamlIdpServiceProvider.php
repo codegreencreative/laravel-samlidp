@@ -72,6 +72,10 @@ class LaravelSamlIdpServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__ . '/../config/samlidp.php' => config_path('samlidp.php'),
             ], 'samlidp_config');
+
+            $this->publishes([
+                __DIR__ . '/../database/migrations' => database_path('migrations'),
+            ], 'samlidp_migrations');
         }
     }
 
