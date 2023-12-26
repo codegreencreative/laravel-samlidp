@@ -1,0 +1,23 @@
+version: "3.4"
+services:
+    postgres:
+        image: postgres:13.6-alpine
+        environment:
+            POSTGRES_USER: testsuite
+            POSTGRES_PASSWORD: testsuite
+        healthcheck:
+            test: pg_isready
+
+    laravel-samlidp:
+        build:
+#            context: ./laravel-best
+#            target: php-dev
+            args:
+                GITHUB_TOKEN: $GITHUB_TOKEN
+#        image: 856220805142.dkr.ecr.us-east-1.amazonaws.com/bright/laravel-best:testing
+        depends_on:
+            postgres:
+                condition: service_healthy
+
+        volumes:
+            - .:/var/www
