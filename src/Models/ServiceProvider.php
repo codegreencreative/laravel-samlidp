@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace CodeGreenCreative\SamlIdp\Src\Models;
+namespace CodeGreenCreative\SamlIdp\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

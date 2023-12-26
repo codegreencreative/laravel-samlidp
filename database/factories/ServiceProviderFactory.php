@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\CodeGreenCreative\SamlIdp\Src\Models\ServiceProvider>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\CodeGreenCreative\SamlIdp\Models\ServiceProvider>
  */
 class ServiceProviderFactory extends Factory
 {
