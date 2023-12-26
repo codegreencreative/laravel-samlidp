@@ -67,4 +67,8 @@ return [
 
     // List of guards saml idp will catch Authenticated, Login and Logout events
     'guards' => ['web'],
+
+    // Define the model used to store service provider configurations (if applicable)
+    'config_model_usage' => false,
+    'config_model' => \CodeGreenCreative\SamlIdp\Src\Models\ServiceProvider::class
 ];
