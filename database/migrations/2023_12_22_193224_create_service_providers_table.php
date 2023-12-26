@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('service_providers', function (Blueprint $table) {
             $table->id();
-            $table->string('destination_url');
+            $table->string('destination_url')->unique();
             $table->string('logout_url');
             $table->string('certificate');
             $table->string('block_encryption_algorithm');
