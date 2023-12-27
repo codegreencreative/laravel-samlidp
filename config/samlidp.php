@@ -69,6 +69,6 @@ return [
     'guards' => ['web'],
 
     // Define the model used to store service provider configurations (if applicable)
-    'config_model_usage' => false,
-    'config_model' => \CodeGreenCreative\SamlIdp\Models\ServiceProvider::class
+    'service_provider_model_usage' => false,
+    'service_provider_model' => \CodeGreenCreative\SamlIdp\Models\ServiceProvider::class
 ];
