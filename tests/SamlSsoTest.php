@@ -4,14 +4,11 @@ namespace CodeGreenCreative\SamlIdp\Tests;
 
 use CodeGreenCreative\SamlIdp\Jobs\SamlSso;
 use Illuminate\Foundation\Auth\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\Attributes\Test;
 
 class SamlSsoTest extends TestCase
 {
-    use RefreshDatabase;
-
     /**
      * @var string
      */
