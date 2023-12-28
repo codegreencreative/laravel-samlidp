@@ -65,23 +65,25 @@ class SamlSsoTest extends TestCase
 
     private function createFakeSamlRequest(): string
     {
-        $fakeSamlRequestXml = '<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
-xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
-ID="ONELOGIN_809707f0030a5d00620c9d9df97f627afe9dcc24"
-Version="2.0"
-ProviderName="SP test"
-IssueInstant="2014-07-16T23:52:45Z"
-Destination="http://idp.example.com/SSOService.php"
-ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
-AssertionConsumerServiceURL="'.$this->fakeACS.'">
-<saml:Issuer>http://sp.example.com/demo1/metadata.php</saml:Issuer>
-<samlp:NameIDPolicy Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
-AllowCreate="true" />
-<samlp:RequestedAuthnContext Comparison="exact">
-<saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>
-</samlp:RequestedAuthnContext>
-</samlp:AuthnRequest>';
-
+        $fakeSamlRequestXml = <<<XML
+<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+         xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+         ID="ONELOGIN_809707f0030a5d00620c9d9df97f627afe9dcc24"
+         Version="2.0"
+         ProviderName="SP test"
+         IssueInstant="2014-07-16T23:52:45Z"
+         Destination="http://idp.example.com/SSOService.php"
+         ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+         AssertionConsumerServiceURL="$this->fakeACS">
+         <saml:Issuer>http://sp.example.com/demo1/metadata.php</saml:Issuer>
+         <samlp:NameIDPolicy Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+         AllowCreate="true" />
+         <samlp:RequestedAuthnContext Comparison="exact">
+         <saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>
+         </samlp:RequestedAuthnContext>
+         </samlp:AuthnRequest>
+XML;
+        
         // gzip inflate
         $gzSamlRequest = gzdeflate($fakeSamlRequestXml);
 
@@ -93,11 +95,11 @@ AllowCreate="true" />
     // The following test case is to ensure that when the 'service_provider_model_usage' config variable is not set,
     // the SamlSso job will run as normal and use the configuration data provided in the config to create a response.
     #[Test]
-    public function use_config_variables_to_create_response_when_database_access_config_variable_is_not_set(): void
+    public function create_saml_response_using_samlidp_config(): void
     {
         // Arrange
         $fakeSPConfig = [
-             'destination' => 'https://faketest.com',
+             'destination' => $this->fakeACS,
              'logout' => 'https://anotherfaketest.com',
              'certificate' => '',
              'query_params' => false,
