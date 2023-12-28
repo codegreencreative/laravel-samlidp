@@ -104,6 +104,8 @@ AllowCreate="true" />
              'encrypt_assertion' => false
         ];
 
+        // We HAVE to keep the exact format given in the config, i.e (encoded ACS URL => SP configuration)
+        // Otherwise the SamlSso job will not be able to find the correct service provider configuration
         $encodedAcsUrl = base64_encode($this->fakeACS);
         config([
             'samlidp.sp' => [
