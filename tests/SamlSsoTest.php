@@ -160,6 +160,38 @@ XML;
     }
 
     /** @test */
+    public function do_not_access_database_if_service_provider_model_usage_variable_is_false(): void
+    {
+        // Arrange
+        config([
+            'samlidp.service_provider_model_usage' => false,
+        ]);
+
+        $fakeSPConfig = [
+            'destination' => $this->fakeACS,
+            'logout' => 'https://anotherfaketest.com',
+            'certificate' => '',
+            'query_params' => false,
+            'encrypt_assertion' => false
+        ];
+        
+        $encodedAcsUrl = base64_encode($this->fakeACS);
+        config([
+            'samlidp.sp' => [
+                $encodedAcsUrl => $fakeSPConfig
+            ]
+        ]);
+
+        DB::connection()->enableQueryLog();
+
+        // Act
+        $samlResponse = (new SamlSso())->handle();
+
+        // Assert
+        $this->assertEmpty(DB::getQueryLog());
+    }
+
+    /** @test */
     public function create_response_using_service_provider_model_when_database_access_is_configured(): void
     {
         // Arrange
