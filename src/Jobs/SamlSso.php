@@ -167,6 +167,27 @@ class SamlSso implements SamlContract
 
     private function setDestination()
     {
+        if (config('samlidp.service_provider_model_usage')) {
+            $spModelClass = config('samlidp.service_provider_model');
+            $spRequesting = $this->authn_request->getAssertionConsumerServiceURL();
+
+            $serviceProvider = $spModelClass::where('destination_url', $spRequesting)->firstOrFail();
+            $spConfiguration = [
+                'destination' => $serviceProvider->destination_url,
+                'logout' => $serviceProvider->logout_url,
+                'certificate' => $serviceProvider->certificate,
+                'query_params' => $serviceProvider->query_parameters,
+                'encrypt_assertion' => $serviceProvider->encrypt_assertion,
+                'block_encryption_algorithm' => $serviceProvider->block_encryption_algorithm,
+                'key_transport_encryption' => $serviceProvider->key_transport_encryption
+            ];
+
+            $spConfigs = config('samlidp.sp');
+            $spConfigs[base64_encode($serviceProvider->destination_url)] = $spConfiguration;
+
+            config(['samlidp.sp' => $spConfigs]);
+        }
+
         $destination = config(sprintf('samlidp.sp.%s.destination', $this->getServiceProvider($this->authn_request)));
 
         if (empty($destination)) {

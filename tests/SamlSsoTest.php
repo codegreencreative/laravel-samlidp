@@ -3,12 +3,16 @@
 namespace CodeGreenCreative\SamlIdp\Tests;
 
 use CodeGreenCreative\SamlIdp\Jobs\SamlSso;
+use CodeGreenCreative\SamlIdp\Models\ServiceProvider;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\Attributes\Test;
 
 class SamlSsoTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * @var string
      */
@@ -123,5 +127,70 @@ XML;
 
         $expectedFormTag = '<form method="post" action="' . $fakeSPConfig['destination'] .'">';
         $this->assertTrue(str_contains($samlResponse, $expectedFormTag));
+    }
+
+    #[Test]
+    public function use_service_provider_model_to_create_response_when_database_access_config_variable_is_true(): void
+    {
+        // Arrange
+        config([
+            'samlidp.service_provider_model_usage' => true,
+            'samlidp.service_provider_model' => ServiceProvider::class
+        ]);
+        $serviceProvider = ServiceProvider::factory()->create([
+            'destination_url' => $this->fakeACS // This field HAS to match the ACS URL in the SAML request
+        ]);
+
+        // Act
+        $samlResponse = (new SamlSso())->handle();
+
+        // Assert
+        $this->assertNotNull($samlResponse);
+
+        $expectedFormTag = '<form method="post" action="' .$serviceProvider->destination_url.'">';
+        $this->assertTrue(str_contains($samlResponse, $expectedFormTag));
+    }
+
+    #[Test]
+    public function add_sp_model_configuration_to_existing_service_provider_array_in_config(): void
+    {
+        // Arrange
+        // We need to create an existing service provider configuration in the config so that we can assure that we
+        // dont overwrite it when we add the model's sp configuration to the file
+        config([
+            'samlidp.service_provider_model_usage' => true,
+            'samlidp.service_provider_model' => ServiceProvider::class,
+            'samlidp.sp' => [
+                 'aHR0cHM6Ly9teWZhY2Vib29rd29ya3BsYWNlLmZhY2Vib29rLmNvbS93b3JrL3NhbWwucGhw' => [
+                     'destination' => 'https://myfacebookworkplace.facebook.com/work/saml.php',
+                     'logout' => 'https://myfacebookworkplace.facebook.com/work/sls.php',
+                     'certificate' => '',
+                     'query_params' => false,
+                     'encrypt_assertion' => false
+                    ]
+            ]
+        ]);
+
+        $serviceProvider = ServiceProvider::factory()->create([
+            'destination_url' => $this->fakeACS // This field HAS to match the ACS URL in the SAML request
+        ]);
+
+        // Act
+        $samlResponse = (new SamlSso())->handle();
+
+        // Assert
+        $encodedAcsUrl = base64_encode($serviceProvider->destination_url);
+        $expectedConfigEntry = [
+            'destination' => $serviceProvider->destination_url,
+            'logout' => $serviceProvider->logout_url,
+            'certificate' => $serviceProvider->certificate,
+            'query_params' => $serviceProvider->query_parameters,
+            'encrypt_assertion' => $serviceProvider->encrypt_assertion,
+            'block_encryption_algorithm' => $serviceProvider->block_encryption_algorithm,
+            'key_transport_encryption' => $serviceProvider->key_transport_encryption
+        ];
+
+        $this->assertCount(2, config('samlidp.sp'));
+        $this->assertEquals($expectedConfigEntry, config("samlidp.sp.$encodedAcsUrl"));
     }
 }
