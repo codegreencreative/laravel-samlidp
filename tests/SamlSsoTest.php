@@ -83,7 +83,7 @@ class SamlSsoTest extends TestCase
          </samlp:RequestedAuthnContext>
          </samlp:AuthnRequest>
 XML;
-        
+
         // gzip inflate
         $gzSamlRequest = gzdeflate($fakeSamlRequestXml);
 
@@ -94,7 +94,7 @@ XML;
 
     // The following test case is to ensure that when the 'service_provider_model_usage' config variable is not set,
     // the SamlSso job will run as normal and use the configuration data provided in the config to create a response.
-    #[Test]
+    /** @test */
     public function create_saml_response_using_samlidp_config(): void
     {
         // Arrange
