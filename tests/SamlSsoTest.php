@@ -7,7 +7,7 @@ use CodeGreenCreative\SamlIdp\Models\ServiceProvider;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
-use PHPUnit\Framework\Attributes\Test;
+use Illuminate\Support\Facades\DB;
 
 class SamlSsoTest extends TestCase
 {
@@ -129,8 +129,38 @@ XML;
         $this->assertTrue(str_contains($samlResponse, $expectedFormTag));
     }
 
-    #[Test]
-    public function use_service_provider_model_to_create_response_when_database_access_config_variable_is_true(): void
+    /** @test */
+    public function do_not_access_database_if_service_provider_model_usage_variable_is_not_configured(): void
+    {
+        // Arrange
+        $fakeSPConfig = [
+            'destination' => $this->fakeACS,
+            'logout' => 'https://anotherfaketest.com',
+            'certificate' => '',
+            'query_params' => false,
+            'encrypt_assertion' => false
+        ];
+
+        // We HAVE to keep the exact format given in the config, i.e (encoded ACS URL => SP configuration)
+        // Otherwise the SamlSso job will not be able to find the correct service provider configuration
+        $encodedAcsUrl = base64_encode($this->fakeACS);
+        config([
+            'samlidp.sp' => [
+                $encodedAcsUrl => $fakeSPConfig
+            ]
+        ]);
+
+        DB::connection()->enableQueryLog();
+
+        // Act
+        $samlResponse = (new SamlSso())->handle();
+
+        // Assert
+        $this->assertEmpty(DB::getQueryLog());
+    }
+
+    /** @test */
+    public function create_response_using_service_provider_model_when_database_access_is_configured(): void
     {
         // Arrange
         config([
@@ -151,7 +181,7 @@ XML;
         $this->assertTrue(str_contains($samlResponse, $expectedFormTag));
     }
 
-    #[Test]
+    /** @test */
     public function add_sp_model_configuration_to_existing_service_provider_array_in_config(): void
     {
         // Arrange
