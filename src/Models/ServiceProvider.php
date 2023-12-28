@@ -2,6 +2,7 @@
 
 namespace CodeGreenCreative\SamlIdp\Models;
 
+use CodeGreenCreative\SamlIdp\Database\Factories\ServiceProviderFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,4 +19,9 @@ class ServiceProvider extends Model
         'query_parameters',
         'encrypt_assertion',
     ];
+
+    protected static function newFactory(): ServiceProviderFactory
+    {
+        return ServiceProviderFactory::new();
+    }
 }

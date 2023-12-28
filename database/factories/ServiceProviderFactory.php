@@ -2,11 +2,14 @@
 
 namespace CodeGreenCreative\SamlIdp\Database\Factories;
 
+use CodeGreenCreative\SamlIdp\Models\ServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
 
 class ServiceProviderFactory extends Factory
 {
+    protected $model = ServiceProvider::class;
+
     /**
      * Define the model's default state.
      *
