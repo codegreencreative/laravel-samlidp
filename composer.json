@@ -21,7 +21,8 @@
     "autoload": {
         "psr-4": {
             "CodeGreenCreative\\SamlIdp\\": "src/",
-            "CodeGreenCreative\\SamlIdp\\Tests\\": "tests/"
+            "CodeGreenCreative\\SamlIdp\\Tests\\": "tests/",
+            "CodeGreenCreative\\SamlIdp\\Database\\Factories\\": "database/factories/"
         }
     },
     "extra": {
