@@ -25,6 +25,28 @@ class LogoutController extends Controller
             $request->session()->put('saml.slo', []);
         }
 
+        if (config('samlidp.service_provider_model_usage')) {
+            $spModelClass = config('samlidp.service_provider_model');
+            $serviceProviders = $spModelClass::all();
+
+            foreach ($serviceProviders as $serviceProvider) {
+                $spConfiguration = [
+                    'destination' => $serviceProvider->destination_url,
+                    'logout' => $serviceProvider->logout_url,
+                    'certificate' => $serviceProvider->certificate,
+                    'query_params' => $serviceProvider->query_parameters,
+                    'encrypt_assertion' => $serviceProvider->encrypt_assertion,
+                    'block_encryption_algorithm' => $serviceProvider->block_encryption_algorithm,
+                    'key_transport_encryption' => $serviceProvider->key_transport_encryption
+                ];
+
+                $spConfigs = config('samlidp.sp');
+                $spConfigs[base64_encode($serviceProvider->destination_url)] = $spConfiguration;
+
+                config(['samlidp.sp' => $spConfigs]);
+            }
+        }
+
         // Need to broadcast to our other SAML apps to log out!
         // Loop through our service providers and "touch" the logout URL's
         foreach (config('samlidp.sp') as $key => $sp) {
