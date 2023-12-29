@@ -7,6 +7,12 @@ use \Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->withFactories(__DIR__ . '/../database/factories');
+    }
     /**
      * Get package providers.
      *
@@ -40,5 +46,15 @@ abstract class TestCase extends OrchestraTestCase
             'prefix' => '',
             'schema' => 'public',
         ]);
+    }
+
+    /**
+     * Define database migrations.
+     *
+     * @return void
+     */
+    protected function defineDatabaseMigrations(): void
+    {
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
     }
 }
