@@ -174,7 +174,7 @@ XML;
             'query_params' => false,
             'encrypt_assertion' => false
         ];
-        
+
         $encodedAcsUrl = base64_encode($this->fakeACS);
         config([
             'samlidp.sp' => [
@@ -199,8 +199,9 @@ XML;
             'samlidp.service_provider_model_usage' => true,
             'samlidp.service_provider_model' => ServiceProvider::class
         ]);
-        $serviceProvider = ServiceProvider::factory()->create([
-            'destination_url' => $this->fakeACS // This field HAS to match the ACS URL in the SAML request
+
+        $serviceProvider = factory(ServiceProvider::class)->create([
+            'destination_url' => $this->fakeACS
         ]);
 
         // Act
@@ -233,8 +234,8 @@ XML;
             ]
         ]);
 
-        $serviceProvider = ServiceProvider::factory()->create([
-            'destination_url' => $this->fakeACS // This field HAS to match the ACS URL in the SAML request
+        $serviceProvider = factory(ServiceProvider::class)->create([
+            'destination_url' => $this->fakeACS
         ]);
 
         // Act
