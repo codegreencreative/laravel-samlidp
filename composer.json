@@ -34,7 +34,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^10.4",
-        "orchestra/testbench": "^8.15"
+        "orchestra/testbench": "^8.15",
+        "laravel/legacy-factories": "^1.0.4"
     },
     "autoload-dev": {
         "psr-4": {
