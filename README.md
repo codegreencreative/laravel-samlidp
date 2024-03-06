@@ -9,7 +9,7 @@ This package allows you to implement your own Identification Provider (idP) usin
 
 Starting in version ^5.1, Laravel 9 is supported.
 Starting in version ^5.2.4, Laravel 10 is supported.
-Starting in version ^5.2.9, Laravel 10 is supported.
+Starting in version ^5.2.9, Laravel 11 is supported.
 
 In this version we will be allowing for Laravel ^7.0 or ^8.0.
 
