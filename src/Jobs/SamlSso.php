@@ -39,6 +39,14 @@ class SamlSso implements SamlContract
     use Dispatchable;
     use PerformsSingleSignOn;
 
+    private $authn_request;
+
+    private $response;
+
+    private $guard;
+
+    private $destination;
+
     /**
      * [__construct description]
      */
@@ -55,10 +63,10 @@ class SamlSso implements SamlContract
      */
     public function handle()
     {
-        $deserializationContext = new DeserializationContext();
+        $deserializationContext = new DeserializationContext;
         $deserializationContext->getDocument()->loadXML(gzinflate(base64_decode(request('SAMLRequest'))));
 
-        $this->authn_request = new AuthnRequest();
+        $this->authn_request = new AuthnRequest;
         $this->authn_request->deserialize($deserializationContext->getDocument()->firstChild, $deserializationContext);
 
         $this->setDestination();
@@ -68,22 +76,22 @@ class SamlSso implements SamlContract
 
     public function response()
     {
-        $this->response = (new Response())
+        $this->response = (new Response)
             ->setIssuer(new Issuer($this->issuer))
             ->setStatus(new Status(new StatusCode('urn:oasis:names:tc:SAML:2.0:status:Success')))
             ->setID(Helper::generateID())
-            ->setIssueInstant(new \DateTime())
+            ->setIssueInstant(new \DateTime)
             ->setDestination($this->destination)
             ->setInResponseTo($this->authn_request->getId());
 
-        $assertion = new Assertion();
+        $assertion = new Assertion;
         $assertion
             ->setId(Helper::generateID())
-            ->setIssueInstant(new \DateTime())
+            ->setIssueInstant(new \DateTime)
             ->setIssuer(new Issuer($this->issuer))
             ->setSignature(new SignatureWriter($this->certificate, $this->private_key, $this->digest_algorithm))
             ->setSubject(
-                (new Subject())
+                (new Subject)
                     ->setNameID(
                         new NameID(
                             auth($this->guard)
@@ -93,10 +101,10 @@ class SamlSso implements SamlContract
                         )
                     )
                     ->addSubjectConfirmation(
-                        (new SubjectConfirmation())
+                        (new SubjectConfirmation)
                             ->setMethod(SamlConstants::CONFIRMATION_METHOD_BEARER)
                             ->setSubjectConfirmationData(
-                                (new SubjectConfirmationData())
+                                (new SubjectConfirmationData)
                                     ->setInResponseTo($this->authn_request->getId())
                                     ->setNotOnOrAfter(new \DateTime('+1 MINUTE'))
                                     ->setRecipient($this->authn_request->getAssertionConsumerServiceURL())
@@ -104,21 +112,21 @@ class SamlSso implements SamlContract
                     )
             )
             ->setConditions(
-                (new Conditions())
-                    ->setNotBefore(new \DateTime())
+                (new Conditions)
+                    ->setNotBefore(new \DateTime)
                     ->setNotOnOrAfter(new \DateTime('+1 MINUTE'))
                     ->addItem(new AudienceRestriction([$this->authn_request->getIssuer()->getValue()]))
             )
             ->addItem(
-                (new AuthnStatement())
+                (new AuthnStatement)
                     ->setAuthnInstant(new \DateTime('-10 MINUTE'))
                     ->setSessionIndex(Helper::generateID())
                     ->setAuthnContext(
-                        (new AuthnContext())->setAuthnContextClassRef(SamlConstants::NAME_ID_FORMAT_UNSPECIFIED)
+                        (new AuthnContext)->setAuthnContextClassRef(SamlConstants::NAME_ID_FORMAT_UNSPECIFIED)
                     )
             );
 
-        $attribute_statement = new AttributeStatement();
+        $attribute_statement = new AttributeStatement;
         event(new AssertionEvent($attribute_statement, $this->guard));
         // Add the attributes to the assertion
         $assertion->addItem($attribute_statement);
@@ -126,10 +134,8 @@ class SamlSso implements SamlContract
         // Encrypt the assertion
 
         if ($this->encryptAssertion()) {
-            $encryptedAssertion = new EncryptedAssertionWriter();
-            $encryptedAssertion->encrypt($assertion, KeyHelper::createPublicKey(
-                $this->getSpCertificate()
-            ));
+            $encryptedAssertion = new EncryptedAssertionWriter;
+            $encryptedAssertion->encrypt($assertion, KeyHelper::createPublicKey($this->getSpCertificate()));
             $this->response->addEncryptedAssertion($encryptedAssertion);
         } else {
             $this->response->addAssertion($assertion);
@@ -147,15 +153,15 @@ class SamlSso implements SamlContract
     /**
      * [sendSamlRequest description]
      *
-     * @param Request $request [description]
-     * @param User $user [description]
+     * @param  Request  $request  [description]
+     * @param  User  $user  [description]
      * @return [type]           [description]
      */
     public function send($binding_type)
     {
-        $bindingFactory = new BindingFactory();
+        $bindingFactory = new BindingFactory;
         $postBinding = $bindingFactory->create($binding_type);
-        $messageContext = new MessageContext();
+        $messageContext = new MessageContext;
         $messageContext->setMessage($this->response)->asResponse();
         $message = $messageContext->getMessage();
         $message->setRelayState(request('RelayState'));
@@ -204,12 +210,9 @@ class SamlSso implements SamlContract
 
     private function getSpCertificate()
     {
-        $spCertificate = config(sprintf(
-            'samlidp.sp.%s.certificate',
-            $this->getServiceProvider($this->authn_request)
-        ));
+        $spCertificate = config(sprintf('samlidp.sp.%s.certificate', $this->getServiceProvider($this->authn_request)));
 
-        return (strpos($spCertificate, 'file://') === 0)
+        return strpos($spCertificate, 'file://') === 0
             ? X509Certificate::fromFile($spCertificate)
             : (new X509Certificate)->loadPem($spCertificate);
     }
@@ -218,8 +221,6 @@ class SamlSso implements SamlContract
      * Check to see if the SP wants to encrypt assertions first
      * If its not set, default to base encryption assertion config
      * Otherwise return true
-     *
-     * @return boolean
      */
     private function encryptAssertion(): bool
     {
