@@ -2,20 +2,21 @@
 
 namespace CodeGreenCreative\SamlIdp\Exceptions;
 
-use InvalidArgumentException;
 use Throwable;
+use InvalidArgumentException;
 
 class DestinationMissingException extends InvalidArgumentException
 {
     /**
      * [__construct description]
-     * @param string|null    $message  [description]
-     * @param Throwable|null $previous [description]
-     * @param array          $headers  [description]
-     * @param int|integer    $code     [description]
+     *
+     * @param  string|null  $message  [description]
+     * @param  Throwable|null  $previous  [description]
+     * @param  array  $headers  [description]
+     * @param  int|int  $code  [description]
      */
-    public function __construct(string $message = null, Throwable $previous = null)
+    public function __construct(?string $message, ?Throwable $previous = null)
     {
-        parent::__construct($message, $previous);
+        parent::__construct($message, 0, $previous);
     }
 }
