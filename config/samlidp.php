@@ -1,5 +1,7 @@
 <?php
 
+use LightSaml\SamlConstants;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -13,6 +15,8 @@ return [
     'debug' => false,
     // Define the email address field name in the users table
     'email_field' => 'email',
+    // Define the Name ID for the email field.
+    'email_name_id'=> SamlConstants::NAME_ID_FORMAT_EMAIL,
     // Define the name field in the users table
     'name_field' => 'name',
     // The URI to your login page
