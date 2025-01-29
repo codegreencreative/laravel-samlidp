@@ -30,6 +30,7 @@ class LaravelSamlIdpServiceProvider extends ServiceProvider
     {
         $this->registerEvents();
         $this->registerRoutes();
+        $this->registerMigrations();
         $this->registerResources();
         $this->registerBladeComponents();
     }
@@ -149,5 +150,12 @@ class LaravelSamlIdpServiceProvider extends ServiceProvider
                 CreateServiceProvider::class,
             ]);
         }
+    }
+
+    private function registerMigrations()
+    {
+        $this->publishesMigrations([
+            __DIR__.'/../database/migrations' => database_path('migrations'),
+        ]);
     }
 }
