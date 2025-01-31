@@ -89,8 +89,7 @@ trait PerformsSingleSignOn
     protected function getServiceProviderConfigValue($request, string $configKey): mixed
     {
         if (config('samlidp.sp') === SamlServiceProvider::class) {
-            $serviceProvider = SamlServiceProvider::where('encoded_acs_url', $this->getServiceProvider($request))
-                ->firstOrFail();
+            $serviceProvider = SamlServiceProvider::findOrFail($this->getServiceProvider($request));
 
             return $serviceProvider->$configKey;
         }
