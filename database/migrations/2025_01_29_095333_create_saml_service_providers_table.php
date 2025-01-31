@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('saml_service_providers', function (Blueprint $table) {
-            $table->id();
-            $table->string('acs_url_encoded');
+            $table->string('id')->unique()->comment('acs_url base64 encoded');
             $table->string('acs_url');
             $table->string('destination');
             $table->string('logout');
@@ -22,7 +21,7 @@ return new class extends Migration
             $table->boolean('encrypt_assertion');
             $table->timestamps();
 
-            $table->index('acs_url_encoded');
+            $table->primary('id');
         });
     }
 
