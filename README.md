@@ -112,6 +112,27 @@ return [
 ];
 ```
 
+#### Setting the service providers to be read from the database
+
+Run migrations
+
+```bash
+php artisan migrate
+```
+
+Add a service provider to the database table `saml_service_providers`. The database table follows the same principles
+as the config file.
+
+```php
+<?php
+
+return [
+    // ...
+    'sp' => \CodeGreenCreative\SamlIdp\Models\SamlServiceProvider::class,
+    // ...
+];
+```
+
 ### Setting the service provider certificate
 
 There are three options to set the service provider certificate.
