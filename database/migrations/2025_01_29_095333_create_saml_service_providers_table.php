@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('saml_service_providers', function (Blueprint $table) {
             $table->string('id')->unique()->comment('acs_url base64 encoded');
-            $table->string('acs_url');
-            $table->string('destination');
-            $table->string('logout');
+            $table->text('acs_url');
+            $table->text('destination');
+            $table->text('logout');
             $table->longText('certificate');
             $table->boolean('query_params');
             $table->boolean('encrypt_assertion');
