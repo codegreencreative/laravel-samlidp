@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('saml_service_providers', function (Blueprint $table) {
+        Schema::create('laravel_samlidp_service_providers', function (Blueprint $table) {
             $table->string('id')->unique()->comment('acs_url base64 encoded');
             $table->text('acs_url');
             $table->text('destination');
