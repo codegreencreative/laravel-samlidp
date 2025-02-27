@@ -224,12 +224,7 @@ class SamlSso implements SamlContract
      */
     private function encryptAssertion(): bool
     {
-        $encryptAssertion = $this->getServiceProviderConfigValue($this->authn_request, 'encrypt_assertion');
-
-        if(is_null($encryptAssertion)) {
-            $encryptAssertion = config('samlidp.encrypt_assertion', true);
-        }
-
-        return $encryptAssertion;
+        return $this->getServiceProviderConfigValue($this->authn_request, 'encrypt_assertion')
+            ?? config('samlidp.encrypt_assertion', true);
     }
 }
