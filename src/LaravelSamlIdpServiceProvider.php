@@ -154,8 +154,6 @@ class LaravelSamlIdpServiceProvider extends ServiceProvider
 
     private function registerMigrations()
     {
-        $this->publishesMigrations([
-            __DIR__.'/../database/migrations' => database_path('migrations'),
-        ]);
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
 }
