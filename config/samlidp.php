@@ -37,8 +37,10 @@ return [
     'encrypt_assertion' => true,
     // Make sure messages are signed
     'messages_signed' => true,
-    // Defind what digital algorithm you want to use
+    // Define what digital algorithm you want to use
     'digest_algorithm' => \RobRichards\XMLSecLibs\XMLSecurityDSig::SHA1,
+    // Auth Context to send with the assertion
+    'authn_context' => SamlConstants::NAME_ID_FORMAT_UNSPECIFIED,
     // list of all service providers
     'sp' => [
         // Base64 encoded ACS URL
