@@ -122,7 +122,7 @@ class SamlSso implements SamlContract
                     ->setAuthnInstant(new \DateTime('-10 MINUTE'))
                     ->setSessionIndex(Helper::generateID())
                     ->setAuthnContext(
-                        (new AuthnContext)->setAuthnContextClassRef(SamlConstants::NAME_ID_FORMAT_UNSPECIFIED)
+                        (new AuthnContext)->setAuthnContextClassRef(config('samlidp.authn_context', SamlConstants::NAME_ID_FORMAT_UNSPECIFIED))
                     )
             );
 
