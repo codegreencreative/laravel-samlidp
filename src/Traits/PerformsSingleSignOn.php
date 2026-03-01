@@ -88,8 +88,8 @@ trait PerformsSingleSignOn
 
     protected function getServiceProviderConfigValue($request, string $configKey): mixed
     {
-        if (config('samlidp.sp') === SamlServiceProvider::class) {
-            $serviceProvider = SamlServiceProvider::findOrFail($this->getServiceProvider($request));
+        if (!is_array(config('samlidp.sp'))) {
+            $serviceProvider = config('samlidp.sp')::findOrFail($this->getServiceProvider($request));
 
             return $serviceProvider->$configKey;
         }
